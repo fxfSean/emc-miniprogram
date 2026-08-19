@@ -3,7 +3,7 @@ cloud.init({ env: cloud.DYNAMIC_CURRENT_ENV })
 const db = cloud.database(), _ = db.command
 const labels = { AVAILABLE: '可预约', MAINTENANCE: '维护中', DISABLED: '已停用' }
 const ok = data => ({ ok: true, data }), fail = message => ({ ok: false, message })
-async function currentUser() { const openid = cloud.getWXContext().OPENID; const r = await db.collection('users').where({ openid }).limit(1).get(); return r.data[0] }
+async function currentUser() { const openid = cloud.getWXContext().OPENID; if (!openid) return null; const r = await db.collection('users').where({ openid }).limit(1).get(); return r.data[0] }
 exports.main = async event => {
   try {
     const user = await currentUser()

@@ -1,7 +1,7 @@
 const { call } = require('./utils/cloud')
 
 App({
-  globalData: { user: null, envId: '' },
+  globalData: { user: null, envId: 'emc-lab-dev-d6gtpq5dh51b806c3' },
   onLaunch() {
     if (!wx.cloud) {
       wx.showModal({ title: '版本过低', content: '请升级微信后再使用本小程序', showCancel: false })

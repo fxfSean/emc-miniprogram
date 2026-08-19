@@ -6,6 +6,7 @@ const fail = message => ({ ok: false, message })
 exports.main = async event => {
   const openid = cloud.getWXContext().OPENID
   try {
+    if (!openid) return fail('无法获取微信身份')
     if (event.action === 'session') {
       const result = await db.collection('users').where({ openid }).limit(1).get()
       return ok(result.data[0] || null)

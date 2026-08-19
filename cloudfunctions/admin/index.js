@@ -2,7 +2,7 @@ const cloud = require('wx-server-sdk')
 cloud.init({ env: cloud.DYNAMIC_CURRENT_ENV })
 const db = cloud.database(), _ = db.command
 const ok = data => ({ ok: true, data }), fail = message => ({ ok: false, message })
-async function admin() { const openid = cloud.getWXContext().OPENID; const r = await db.collection('users').where({ openid, role: 'ADMIN', status: 'APPROVED' }).limit(1).get(); return r.data[0] }
+async function admin() { const openid = cloud.getWXContext().OPENID; if (!openid) return null; const r = await db.collection('users').where({ openid, role: 'ADMIN', status: 'APPROVED' }).limit(1).get(); return r.data[0] }
 function dayRange() {
   const local = new Date(Date.now() + 8 * 3600000)
   const date = `${local.getUTCFullYear()}-${String(local.getUTCMonth() + 1).padStart(2, '0')}-${String(local.getUTCDate()).padStart(2, '0')}`

@@ -3,7 +3,7 @@ cloud.init({ env: cloud.DYNAMIC_CURRENT_ENV })
 const db = cloud.database(), _ = db.command
 const ok = data => ({ ok: true, data }), fail = message => ({ ok: false, message })
 const statusText = { BOOKED: '待使用', CANCELLED: '已取消', COMPLETED: '已结束' }
-async function user() { const openid = cloud.getWXContext().OPENID; const r = await db.collection('users').where({ openid }).limit(1).get(); return r.data[0] }
+async function user() { const openid = cloud.getWXContext().OPENID; if (!openid) return null; const r = await db.collection('users').where({ openid }).limit(1).get(); return r.data[0] }
 function parse(date, time) {
   if (!/^\d{4}-\d{2}-\d{2}$/.test(date) || !/^\d{2}:\d{2}$/.test(time)) return NaN
   return Date.parse(`${date}T${time}:00+08:00`)
