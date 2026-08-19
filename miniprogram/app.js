@@ -1,0 +1,19 @@
+const { call } = require('./utils/cloud')
+
+App({
+  globalData: { user: null, envId: '' },
+  onLaunch() {
+    if (!wx.cloud) {
+      wx.showModal({ title: '版本过低', content: '请升级微信后再使用本小程序', showCancel: false })
+      return
+    }
+    wx.cloud.init({ env: this.globalData.envId || undefined, traceUser: true })
+  },
+  async loadSession(force = false) {
+    if (this.globalData.user && !force) return this.globalData.user
+    const user = await call('user', 'session')
+    this.globalData.user = user
+    return user
+  },
+  clearSession() { this.globalData.user = null }
+})

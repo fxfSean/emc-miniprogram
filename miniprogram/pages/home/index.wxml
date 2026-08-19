@@ -1,0 +1,16 @@
+<view class="page">
+  <view class="hero">
+    <text class="hero-title">设备预约</text>
+    <text class="hero-sub">选择设备并查看可用时段</text>
+  </view>
+  <view class="search row">
+    <input value="{{keyword}}" bindinput="onInput" bindconfirm="search" confirm-type="search" placeholder="搜索设备名称、编号或型号" />
+    <button class="button small" bindtap="search">搜索</button>
+  </view>
+  <view wx:if="{{!loading && !devices.length}}" class="empty">暂无匹配设备</view>
+  <view class="card device" wx:for="{{devices}}" wx:key="_id" data-id="{{item._id}}" bindtap="open">
+    <view class="row between"><text class="device-name">{{item.name}}</text><text class="tag {{item.status !== 'AVAILABLE' ? 'gray' : ''}}">{{item.statusText}}</text></view>
+    <text class="meta">{{item.deviceNo}} · {{item.model || '型号未录入'}}</text>
+    <text class="meta">{{item.location || '位置未录入'}}</text>
+  </view>
+</view>

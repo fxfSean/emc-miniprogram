@@ -1,0 +1,5 @@
+.device-name { display: block; font-size: 34rpx; font-weight: 700; margin-bottom: 8rpx; }
+.time-row { display: grid; grid-template-columns: 1fr 50rpx 1fr; align-items: center; }
+.dash { text-align: center; padding-top: 18rpx; color: #77817d; }
+.occupied { display: flex; flex-wrap: wrap; gap: 12rpx; }
+.slot { padding: 9rpx 14rpx; color: #925d10; background: #fff2d5; border-radius: 8rpx; font-size: 24rpx; }

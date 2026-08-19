@@ -1,0 +1,10 @@
+{
+  "_id": "reservation",
+  "inviteCode": "",
+  "minDurationMinutes": 30,
+  "maxDurationMinutes": 480,
+  "maxDailyMinutes": 480,
+  "maxActiveReservations": 3,
+  "maxAdvanceDays": 7,
+  "cancelDeadlineMinutes": 30
+}

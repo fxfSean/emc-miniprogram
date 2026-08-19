@@ -1,0 +1,21 @@
+{
+  "pages": [
+    "pages/home/index", "pages/device/detail", "pages/reservation/create",
+    "pages/mine/index", "pages/profile/register", "pages/profile/status",
+    "pages/admin/index", "pages/admin/users", "pages/admin/devices"
+  ],
+  "window": {
+    "navigationBarTitleText": "EMC 智造实验室",
+    "navigationBarBackgroundColor": "#f7f8fa",
+    "navigationBarTextStyle": "black",
+    "backgroundColor": "#f7f8fa"
+  },
+  "tabBar": {
+    "color": "#687078", "selectedColor": "#176b5b", "backgroundColor": "#ffffff",
+    "list": [
+      { "pagePath": "pages/home/index", "text": "设备" },
+      { "pagePath": "pages/mine/index", "text": "我的" }
+    ]
+  },
+  "style": "v2", "sitemapLocation": "sitemap.json"
+}

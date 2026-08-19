@@ -1,0 +1,8 @@
+.hero { padding: 18rpx 0 32rpx; }
+.hero-title { display: block; font-size: 46rpx; font-weight: 700; }
+.hero-sub, .meta { display: block; color: #77817d; margin-top: 9rpx; }
+.search { gap: 16rpx; margin-bottom: 26rpx; }
+.search input { flex: 1; height: 76rpx; background: #fff; border: 1rpx solid #dce1df; border-radius: 10rpx; padding: 0 20rpx; }
+.device-name { font-size: 31rpx; font-weight: 650; }
+.device { transition: background .15s; }
+.device:active { background: #f1f6f4; }

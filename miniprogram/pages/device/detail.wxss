@@ -1,0 +1,7 @@
+.detail-head { padding: 28rpx 0 20rpx; }
+.name { font-size: 42rpx; font-weight: 700; }
+.number { display: block; margin-top: 12rpx; color: #77817d; }
+.specs .row { padding: 16rpx 0; border-bottom: 1rpx solid #eef0ef; }
+.specs .row:last-child { border: 0; }
+.description { line-height: 1.7; }
+.reserve { margin-top: 34rpx; }

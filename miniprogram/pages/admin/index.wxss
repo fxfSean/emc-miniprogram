@@ -1,0 +1,5 @@
+.metrics { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12rpx; }
+.metric { background: #fff; border: 1rpx solid #e3e7e5; border-radius: 10rpx; padding: 24rpx 10rpx; text-align: center; }
+.metric text:first-child { display: block; font-size: 40rpx; font-weight: 700; margin-bottom: 8rpx; }
+.metric .muted { font-size: 23rpx; }
+.menu { display: flex; justify-content: space-between; font-size: 31rpx; }

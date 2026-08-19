@@ -1,0 +1,1 @@
+.name { font-size: 32rpx; font-weight: 700; }.line { display: block; margin-top: 12rpx; }.actions { display: flex; justify-content: flex-end; gap: 14rpx; margin-top: 24rpx; }.actions button { margin: 0; }

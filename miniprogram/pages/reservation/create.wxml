@@ -1,0 +1,8 @@
+<view class="page" wx:if="{{device}}">
+  <view class="card device"><text class="device-name">{{device.name}}</text><text class="muted">{{device.deviceNo}} · {{device.location}}</text></view>
+  <view class="field"><text class="label">预约日期</text><picker mode="date" value="{{date}}" start="{{date}}" bindchange="dateChange"><view class="picker">{{date}}</view></picker></view>
+  <view class="time-row"><view class="field"><text class="label">开始时间</text><picker mode="time" value="{{startTime}}" bindchange="startChange"><view class="picker">{{startTime}}</view></picker></view><view class="dash">至</view><view class="field"><text class="label">结束时间</text><picker mode="time" value="{{endTime}}" bindchange="endChange"><view class="picker">{{endTime}}</view></picker></view></view>
+  <view class="field"><text class="label">已占用时段</text><view class="occupied"><text wx:if="{{!occupied.length}}" class="muted">当日暂无预约</text><text wx:for="{{occupied}}" wx:key="startAt" class="slot">{{item.startTime}}–{{item.endTime}}</text></view></view>
+  <view class="field"><text class="label">实验内容 *</text><textarea class="textarea" maxlength="200" value="{{reason}}" bindinput="reasonInput" placeholder="简要说明实验或使用目的" /></view>
+  <button class="button" loading="{{submitting}}" disabled="{{submitting}}" bindtap="submit">确认预约</button>
+</view>

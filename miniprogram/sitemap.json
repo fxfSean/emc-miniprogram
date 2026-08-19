@@ -1,0 +1,1 @@
+{ "desc": "internal laboratory tool", "rules": [{ "action": "disallow", "page": "*" }] }

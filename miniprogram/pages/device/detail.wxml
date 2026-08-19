@@ -1,0 +1,7 @@
+<view class="page" wx:if="{{device}}">
+  <view class="detail-head"><view class="row between"><text class="name">{{device.name}}</text><text class="tag {{device.status !== 'AVAILABLE' ? 'gray' : ''}}">{{device.statusText}}</text></view><text class="number">{{device.deviceNo}}</text></view>
+  <view class="section-title">设备信息</view>
+  <view class="card specs"><view class="row between"><text class="muted">型号</text><text>{{device.model || '-'}}</text></view><view class="row between"><text class="muted">厂家</text><text>{{device.manufacturer || '-'}}</text></view><view class="row between"><text class="muted">位置</text><text>{{device.location || '-'}}</text></view></view>
+  <view wx:if="{{device.description}}" class="card description">{{device.description}}</view>
+  <button class="button reserve" disabled="{{device.status !== 'AVAILABLE'}}" bindtap="reserve">{{device.status === 'AVAILABLE' ? '预约此设备' : '设备暂不可预约'}}</button>
+</view>

@@ -1,0 +1,9 @@
+{
+  "description": "EMC laboratory equipment reservation mini program",
+  "miniprogramRoot": "miniprogram/",
+  "cloudfunctionRoot": "cloudfunctions/",
+  "appid": "touristappid",
+  "projectname": "emc-lab-reservation",
+  "compileType": "miniprogram",
+  "setting": { "es6": true, "minified": true, "postcss": true, "urlCheck": true }
+}
