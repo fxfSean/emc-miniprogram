@@ -15,6 +15,8 @@ page { background: #f7f8fa; color: #1d2925; font-size: 28rpx; }
 .tag.gray { color: #687078; background: #eef0ef; }
 .field { margin-bottom: 26rpx; }
 .label { display: block; margin-bottom: 12rpx; color: #4e5955; }
-.input, .textarea, .picker { width: 100%; box-sizing: border-box; background: #fff; border: 1rpx solid #dce1df; border-radius: 10rpx; padding: 20rpx; }
-.textarea { min-height: 150rpx; }
+.input, .textarea, .picker { width: 100%; box-sizing: border-box; background: #fff; border: 1rpx solid #dce1df; border-radius: 10rpx; }
+.input { height: 88rpx; min-height: 88rpx; padding: 0 20rpx; line-height: 88rpx; }
+.picker { min-height: 88rpx; padding: 22rpx 20rpx; line-height: 44rpx; }
+.textarea { min-height: 168rpx; padding: 20rpx; line-height: 44rpx; }
 .empty { text-align: center; color: #77817d; padding: 100rpx 24rpx; }
