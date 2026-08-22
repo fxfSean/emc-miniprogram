@@ -17,8 +17,27 @@ exports.main = async event => {
     if (event.action === 'availability') {
       const [start, end] = dayBounds(event.date)
       if (!Number.isFinite(start)) return fail('日期格式不正确')
-      const rows = (await db.collection('reservations').where({ deviceId: event.deviceId, status: 'BOOKED', startAt: _.lt(end), endAt: _.gt(start) }).orderBy('startAt', 'asc').limit(100).get()).data
-      return ok(rows.map(x => ({ startAt: x.startAt, startTime: formatTime(x.startAt), endTime: formatTime(x.endAt) })))
+      const [reservationResult, blockResult, rule] = await Promise.all([
+        db.collection('reservations').where({ deviceId: event.deviceId, status: 'BOOKED', startAt: _.lt(end), endAt: _.gt(start) }).orderBy('startAt', 'asc').limit(100).get(),
+        db.collection('device_blocks').where({ deviceId: event.deviceId, startAt: _.lt(end), endAt: _.gt(start) }).orderBy('startAt', 'asc').limit(100).get(),
+        settings()
+      ])
+      const rows = reservationResult.data
+      const otherUserIds = [...new Set(rows.filter(x => x.userId !== me._id).map(x => x.userId))]
+      const users = otherUserIds.length ? (await db.collection('users').where({ _id: _.in(otherUserIds) }).field({ _id: true, name: true }).get()).data : []
+      const names = Object.fromEntries(users.map(x => [x._id, x.name]))
+      return ok({
+        maxAdvanceDays: Number(rule.maxAdvanceDays || 7),
+        reservations: rows.map(x => ({
+          startAt: x.startAt,
+          endAt: x.endAt,
+          startTime: formatTime(x.startAt),
+          endTime: formatTime(x.endAt),
+          ownership: x.userId === me._id ? 'MINE' : 'OTHER',
+          ownerName: x.userId === me._id ? '' : (names[x.userId] || '实验室成员')
+        })),
+        blocks: blockResult.data.map(x => ({ startAt: x.startAt, endAt: x.endAt, label: String(x.reason || '维护禁用').slice(0, 20) }))
+      })
     }
     if (event.action === 'mine') {
       const now = Date.now(), upcoming = event.scope !== 'HISTORY'
@@ -55,9 +74,9 @@ exports.main = async event => {
       const [dayStart, dayEnd] = dayBounds(event.date)
       const own = (await db.collection('reservations').where({ userId: me._id, status: 'BOOKED', startAt: _.gte(dayStart).and(_.lt(dayEnd)) }).get()).data
       const ownMinutes = own.reduce((sum, x) => sum + (x.endAt - x.startAt) / 60000, 0)
-      if (ownMinutes + duration > Number(rule.maxDailyMinutes || 480)) return fail('超过每日预约时长限制')
+      if (ownMinutes + duration > Number(rule.maxDailyMinutes || 240)) return fail('每人每天最多预约 4 小时')
       const active = await db.collection('reservations').where({ userId: me._id, status: 'BOOKED', endAt: _.gt(now) }).count()
-      if (active.total >= Number(rule.maxActiveReservations || 3)) return fail('待使用预约数量已达上限')
+      if (active.total >= Number(rule.maxActiveReservations || 3)) return fail('每人最多同时持有 3 个有效预约')
       const blocks = await db.collection('device_blocks').where({ deviceId: event.deviceId, startAt: _.lt(endAt), endAt: _.gt(startAt) }).count()
       if (blocks.total) return fail('该时段设备维护中')
       const lockId = `${event.deviceId}_${event.date}`.replace(/[^a-zA-Z0-9_-]/g, '_')

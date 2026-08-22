@@ -1,8 +1,62 @@
-<view class="page" wx:if="{{device}}">
-  <view class="card device"><text class="device-name">{{device.name}}</text><text class="muted">{{device.deviceNo}} · {{device.location}}</text></view>
-  <view class="field"><text class="label">预约日期</text><picker mode="date" value="{{date}}" start="{{date}}" bindchange="dateChange"><view class="picker">{{date}}</view></picker></view>
-  <view class="time-row"><view class="field"><text class="label">开始时间</text><picker mode="time" value="{{startTime}}" bindchange="startChange"><view class="picker">{{startTime}}</view></picker></view><view class="dash">至</view><view class="field"><text class="label">结束时间</text><picker mode="time" value="{{endTime}}" bindchange="endChange"><view class="picker">{{endTime}}</view></picker></view></view>
-  <view class="field"><text class="label">已占用时段</text><view class="occupied"><text wx:if="{{!occupied.length}}" class="muted">当日暂无预约</text><text wx:for="{{occupied}}" wx:key="startAt" class="slot">{{item.startTime}}–{{item.endTime}}</text></view></view>
-  <view class="field"><text class="label">实验内容 *</text><textarea class="textarea" maxlength="200" value="{{reason}}" bindinput="reasonInput" placeholder="简要说明实验或使用目的" /></view>
-  <button class="button" loading="{{submitting}}" disabled="{{submitting}}" bindtap="submit">确认预约</button>
+<view class="booking-page" wx:if="{{device}}">
+  <view class="device-banner">
+    <view class="device-accent"></view>
+    <view class="device-copy">
+      <text class="eyebrow">设备预约</text>
+      <text class="device-name">{{device.name}}</text>
+      <text class="device-meta">编号 {{device.deviceNo}}<text wx:if="{{device.location}}"> · {{device.location}}</text></text>
+    </view>
+    <text class="device-status">{{device.statusText}}</text>
+  </view>
+
+  <view class="calendar-panel">
+    <view class="calendar-head">
+      <view class="month-button" data-delta="-1" bindtap="changeMonth" aria-label="上一个月">‹</view>
+      <view class="month-copy"><text class="section-kicker">选择日期</text><text class="month-title">{{calendarTitle}}</text></view>
+      <view class="month-button" data-delta="1" bindtap="changeMonth" aria-label="下一个月">›</view>
+    </view>
+    <view class="week-row"><text class="week-name" wx:for="{{weekdays}}" wx:key="*this">{{item}}</text></view>
+    <view class="calendar-grid">
+      <view wx:for="{{calendarDays}}" wx:key="key" class="calendar-day {{item.empty ? 'empty-day' : ''}} {{item.today ? 'today' : ''}} {{item.selected ? 'selected-day' : ''}} {{item.disabled ? 'disabled-day' : ''}}" data-value="{{item.value}}" data-disabled="{{item.disabled}}" bindtap="selectDate">
+        <text wx:if="{{!item.empty}}">{{item.day}}</text>
+        <view wx:if="{{item.today && !item.selected}}" class="today-dot"></view>
+      </view>
+    </view>
+  </view>
+
+  <view class="schedule-panel">
+    <view class="schedule-head">
+      <view><text class="section-kicker">当日时段</text><text class="schedule-date">{{selectedDateLabel}} · 30 分钟/格</text></view>
+      <text class="selection-chip {{hasSelection ? 'active' : ''}}">{{selectionText}}</text>
+    </view>
+    <view class="legend">
+      <view class="legend-item"><view class="legend-dot available"></view><text>空闲</text></view>
+      <view class="legend-item"><view class="legend-dot occupied"></view><text>他人预约</text></view>
+      <view class="legend-item"><view class="legend-dot mine"></view><text>我的预约</text></view>
+      <view class="legend-item"><view class="legend-dot blocked"></view><text>维护/过期</text></view>
+    </view>
+    <view class="booking-rules">
+      <view class="rules-heading"><text class="rules-title">预约须知</text><text class="rules-subtitle">提交前请确认</text></view>
+      <view class="rule-item"><text class="rule-index">01</text><text class="rule-text">每人每天最多预约 4 小时</text></view>
+      <view class="rule-item"><text class="rule-index">02</text><text class="rule-text">每人最多同时持有 3 个有效预约</text></view>
+      <view class="rule-item"><text class="rule-index">03</text><text class="rule-text">可预约未来 7 天内的时段（以当前时间为准）</text></view>
+    </view>
+    <view wx:if="{{loading}}" class="slots-loading">正在读取预约状态…</view>
+    <view wx:else class="time-grid">
+      <view wx:for="{{timeSlots}}" wx:key="index" class="time-slot status-{{item.status}} {{item.selected ? 'is-selected' : ''}}" data-index="{{item.index}}" bindtap="selectSlot">
+        <text class="slot-time">{{item.timeText}}</text>
+        <text class="slot-state">{{item.selected ? '已选择' : item.statusText}}</text>
+      </view>
+    </view>
+    <text class="slot-tip">先点一个起始格，再点另一个空闲格，可快速选中连续时段；再次点击已选边缘可缩短。</text>
+  </view>
+
+  <view class="reason-panel">
+    <view class="reason-head"><text class="section-kicker">预约信息</text><text class="required-note">必填</text></view>
+    <textarea class="reason-input" maxlength="200" value="{{reason}}" bindinput="reasonInput" placeholder="请简述预约事由或实验内容" placeholder-class="reason-placeholder" />
+    <view class="submit-row">
+      <view class="submit-summary"><text class="summary-label">本次预约</text><text class="summary-value">{{selectedDateLabel}} {{selectionText}}</text></view>
+      <button class="confirm-button" loading="{{submitting}}" disabled="{{submitting || !hasSelection}}" bindtap="submit">确认预约</button>
+    </view>
+  </view>
 </view>

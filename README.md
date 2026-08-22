@@ -11,7 +11,7 @@ P0 implementation of an internal laboratory equipment reservation mini program, 
 - Availability display and reservation creation
 - Transaction-protected overlap checks per device and date
 - Upcoming/history views and reservation cancellation
-- Private reservation purpose: other users only see occupied time ranges
+- Private reservation purpose: approved users see the reserver name and occupied time range, but never the reservation purpose
 
 ## Project layout
 
