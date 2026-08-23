@@ -1,7 +1,7 @@
 {
   "pages": [
     "pages/home/index", "pages/device/detail", "pages/reservation/create",
-    "pages/mine/index", "pages/profile/register", "pages/profile/status",
+    "pages/mine/index", "pages/profile/register", "pages/profile/edit", "pages/profile/status",
     "pages/admin/index", "pages/admin/users", "pages/admin/devices"
   ],
   "window": {

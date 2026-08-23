@@ -1,0 +1,22 @@
+<view class="page profile-edit-page">
+  <view class="edit-intro">
+    <view class="intro-accent"></view>
+    <text class="section-kicker">个人资料</text>
+    <text class="edit-title">更新实验室身份信息</text>
+    <text class="edit-copy">资料仅用于成员身份确认、设备预约与必要联系。</text>
+  </view>
+
+  <view wx:if="{{loading}}" class="loading">正在读取个人信息…</view>
+  <view wx:else class="form-panel">
+    <view class="field"><text class="label">姓名 <text class="required">*</text></text><input class="input" maxlength="30" value="{{name}}" data-key="name" bindinput="input" placeholder="请输入真实姓名" /></view>
+    <view class="field"><text class="label">学号 / 工号 <text class="required">*</text></text><input class="input" maxlength="40" value="{{studentNo}}" data-key="studentNo" bindinput="input" placeholder="请输入学号或工号" /></view>
+    <view class="field"><text class="label">导师 <text class="required">*</text></text><input class="input" maxlength="30" value="{{advisor}}" data-key="advisor" bindinput="input" placeholder="请输入导师姓名" /></view>
+    <view class="field"><text class="label">手机号</text><input class="input" type="number" maxlength="11" value="{{phone}}" data-key="phone" bindinput="input" placeholder="用于必要的预约联系" /></view>
+
+    <view class="review-notice">
+      <text class="notice-title">审核说明</text>
+      <text class="notice-copy">修改姓名、学号/工号或导师后，需要管理员重新审核；仅修改手机号无需审核。</text>
+    </view>
+    <button class="button save-button" loading="{{submitting}}" disabled="{{submitting}}" bindtap="submit">保存修改</button>
+  </view>
+</view>

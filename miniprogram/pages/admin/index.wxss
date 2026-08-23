@@ -3,3 +3,5 @@
 .metric text:first-child { display: block; font-size: 40rpx; font-weight: 700; margin-bottom: 8rpx; }
 .metric .muted { font-size: 23rpx; }
 .menu { display: flex; justify-content: space-between; font-size: 31rpx; }
+.menu-title { display: block; }
+.menu-desc { display: block; margin-top: 8rpx; color: #77817d; font-size: 23rpx; }

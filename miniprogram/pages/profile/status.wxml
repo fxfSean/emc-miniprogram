@@ -1,7 +1,7 @@
 <view class="page status-page" wx:if="{{user}}">
-  <view class="status-icon">{{user.status === 'REJECTED' ? '!' : '…'}}</view>
-  <view class="status-title">{{user.status === 'REJECTED' ? '资料未通过审核' : '资料审核中'}}</view>
-  <view class="muted status-copy">{{user.status === 'REJECTED' ? (user.reviewNote || '请核对资料后重新提交') : '管理员确认成员身份后即可预约设备'}}</view>
+  <view class="status-icon {{statusClass}}">{{statusIcon}}</view>
+  <view class="status-title">{{statusTitle}}</view>
+  <view class="muted status-copy">{{statusCopy}}</view>
   <view class="card info"><view class="row between"><text>姓名</text><text>{{user.name}}</text></view><view class="row between"><text>学号 / 工号</text><text>{{user.studentNo}}</text></view><view class="row between"><text>导师</text><text>{{user.advisor}}</text></view></view>
   <button wx:if="{{user.status === 'REJECTED'}}" class="button" bindtap="edit">修改并重新提交</button>
   <button class="button secondary" bindtap="refresh">刷新状态</button>

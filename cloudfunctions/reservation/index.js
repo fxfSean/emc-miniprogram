@@ -2,7 +2,7 @@ const cloud = require('wx-server-sdk')
 cloud.init({ env: cloud.DYNAMIC_CURRENT_ENV })
 const db = cloud.database(), _ = db.command
 const ok = data => ({ ok: true, data }), fail = message => ({ ok: false, message })
-const statusText = { BOOKED: '待使用', CANCELLED: '已取消', COMPLETED: '已结束' }
+const reservationStatusText = { WAITING: '待使用', IN_USE: '使用中', ENDED: '已结束', CANCELLED: '已取消' }
 async function user() { const openid = cloud.getWXContext().OPENID; if (!openid) return null; const r = await db.collection('users').where({ openid }).limit(1).get(); return r.data[0] }
 function parse(date, time) {
   if (!/^\d{4}-\d{2}-\d{2}$/.test(date) || !/^\d{2}:\d{2}$/.test(time)) return NaN
@@ -40,16 +40,38 @@ exports.main = async event => {
       })
     }
     if (event.action === 'mine') {
-      const now = Date.now(), upcoming = event.scope !== 'HISTORY'
-      const condition = upcoming ? { userId: me._id, status: 'BOOKED', endAt: _.gt(now) } : { userId: me._id, endAt: _.lte(now) }
-      let rows = (await db.collection('reservations').where(condition).orderBy('startAt', upcoming ? 'asc' : 'desc').limit(100).get()).data
-      if (!upcoming) {
-        const cancelled = (await db.collection('reservations').where({ userId: me._id, status: 'CANCELLED' }).orderBy('startAt', 'desc').limit(100).get()).data
-        rows = [...rows, ...cancelled].sort((a, b) => b.startAt - a.startAt).slice(0, 100)
+      const now = Date.now()
+      const scopes = ['WAITING', 'IN_USE', 'ENDED', 'CANCELLED', 'UPCOMING', 'HISTORY']
+      const scope = scopes.includes(event.scope) ? event.scope : 'WAITING'
+      let rows = []
+      if (scope === 'WAITING') {
+        rows = (await db.collection('reservations').where({ userId: me._id, status: 'BOOKED', startAt: _.gt(now) }).orderBy('startAt', 'asc').limit(100).get()).data
+      } else if (scope === 'IN_USE') {
+        rows = (await db.collection('reservations').where({ userId: me._id, status: 'BOOKED', startAt: _.lte(now), endAt: _.gt(now) }).orderBy('startAt', 'asc').limit(100).get()).data
+      } else if (scope === 'ENDED') {
+        const [expired, completed] = await Promise.all([
+          db.collection('reservations').where({ userId: me._id, status: 'BOOKED', endAt: _.lte(now) }).orderBy('startAt', 'desc').limit(100).get(),
+          db.collection('reservations').where({ userId: me._id, status: 'COMPLETED' }).orderBy('startAt', 'desc').limit(100).get()
+        ])
+        rows = [...expired.data, ...completed.data].sort((a, b) => b.startAt - a.startAt).slice(0, 100)
+      } else if (scope === 'CANCELLED') {
+        rows = (await db.collection('reservations').where({ userId: me._id, status: 'CANCELLED' }).orderBy('startAt', 'desc').limit(100).get()).data
+      } else if (scope === 'UPCOMING') {
+        rows = (await db.collection('reservations').where({ userId: me._id, status: 'BOOKED', endAt: _.gt(now) }).orderBy('startAt', 'asc').limit(100).get()).data
+      } else {
+        const [expired, completed, cancelled] = await Promise.all([
+          db.collection('reservations').where({ userId: me._id, status: 'BOOKED', endAt: _.lte(now) }).orderBy('startAt', 'desc').limit(100).get(),
+          db.collection('reservations').where({ userId: me._id, status: 'COMPLETED' }).orderBy('startAt', 'desc').limit(100).get(),
+          db.collection('reservations').where({ userId: me._id, status: 'CANCELLED' }).orderBy('startAt', 'desc').limit(100).get()
+        ])
+        rows = [...expired.data, ...completed.data, ...cancelled.data].sort((a, b) => b.startAt - a.startAt).slice(0, 100)
       }
       const ids = [...new Set(rows.map(x => x.deviceId))], devices = ids.length ? (await db.collection('devices').where({ _id: _.in(ids) }).get()).data : []
       const names = Object.fromEntries(devices.map(x => [x._id, x.name]))
-      return ok(rows.map(x => ({ ...x, deviceName: names[x.deviceId] || '设备已移除', statusText: x.status === 'BOOKED' && x.endAt <= now ? '已结束' : statusText[x.status], canCancel: x.status === 'BOOKED' && x.startAt > now })))
+      return ok(rows.map(x => {
+        const category = x.status === 'CANCELLED' ? 'CANCELLED' : (x.status === 'COMPLETED' || x.endAt <= now ? 'ENDED' : (x.startAt <= now ? 'IN_USE' : 'WAITING'))
+        return { ...x, deviceName: names[x.deviceId] || '设备已移除', category, statusText: reservationStatusText[category], canCancel: category === 'WAITING' }
+      }))
     }
     if (event.action === 'cancel') {
       const row = (await db.collection('reservations').doc(event.id).get()).data

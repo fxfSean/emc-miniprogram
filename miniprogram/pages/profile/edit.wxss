@@ -1,0 +1,15 @@
+.profile-edit-page { padding-bottom: 52rpx; }
+.edit-intro { position: relative; margin-bottom: 20rpx; padding: 28rpx 26rpx 26rpx 36rpx; overflow: hidden; border-radius: 16rpx 6rpx 16rpx 6rpx; background: #163f38; color: #fff; }
+.intro-accent { position: absolute; top: 0; bottom: 0; left: 0; width: 9rpx; background: #65b89e; }
+.section-kicker { display: block; color: #9ed3c2; font-size: 21rpx; font-weight: 600; letter-spacing: 2rpx; }
+.edit-title { display: block; margin-top: 8rpx; font-size: 34rpx; font-weight: 700; }
+.edit-copy { display: block; margin-top: 12rpx; color: #c4d7d1; font-size: 23rpx; line-height: 1.55; }
+.form-panel { padding: 26rpx; border: 1rpx solid #d8dedb; border-radius: 12rpx; background: #fff; }
+.field:last-of-type { margin-bottom: 20rpx; }
+.required { color: #b64a43; }
+.review-notice { position: relative; margin: 8rpx 0 26rpx; padding: 18rpx 20rpx 18rpx 26rpx; overflow: hidden; border: 1rpx solid #d8dedb; border-radius: 4rpx 10rpx 10rpx 4rpx; background: #f1f5f2; }
+.review-notice::before { position: absolute; top: 0; bottom: 0; left: 0; width: 7rpx; background: #176b5b; content: ""; }
+.notice-title { display: block; color: #1f2926; font-size: 24rpx; font-weight: 700; }
+.notice-copy { display: block; margin-top: 7rpx; color: #68736f; font-size: 22rpx; line-height: 1.6; }
+.save-button { margin-top: 0; }
+.loading { padding: 120rpx 20rpx; color: #77817d; text-align: center; }
