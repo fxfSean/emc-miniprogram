@@ -37,9 +37,7 @@
     </view>
     <view class="booking-rules">
       <view class="rules-heading"><text class="rules-title">预约须知</text><text class="rules-subtitle">提交前请确认</text></view>
-      <view class="rule-item"><text class="rule-index">01</text><text class="rule-text">每人每天最多预约 4 小时</text></view>
-      <view class="rule-item"><text class="rule-index">02</text><text class="rule-text">每人最多同时持有 3 个有效预约</text></view>
-      <view class="rule-item"><text class="rule-index">03</text><text class="rule-text">可预约未来 7 天内的时段（以当前时间为准）</text></view>
+      <view class="rule-item" wx:for="{{ruleTexts}}" wx:key="index"><text class="rule-index">0{{index + 1}}</text><text class="rule-text">{{item}}</text></view>
     </view>
     <view wx:if="{{loading}}" class="slots-loading">正在读取预约状态…</view>
     <view wx:else class="time-grid">

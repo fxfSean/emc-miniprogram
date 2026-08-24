@@ -1,0 +1,22 @@
+<view class="page announcement-page">
+  <view class="admin-head"><view><text class="head-kicker">LAB BULLETIN</text><text class="head-title">消息与公告</text><text class="head-copy">发布实验室安排并管理有效状态</text></view><button class="settings-button" bindtap="settings">通知设置</button></view>
+  <view class="metrics"><view><text>{{counts.ACTIVE}}</text><text>生效中</text></view><view><text>{{counts.DISABLED}}</text><text>已停用</text></view><view><text>{{counts.EXPIRED}}</text><text>已过期</text></view></view>
+  <view class="filters"><text class="{{status === 'ALL' ? 'active' : ''}}" data-status="ALL" bindtap="selectStatus">全部</text><text class="{{status === 'PUBLISHED' ? 'active' : ''}}" data-status="PUBLISHED" bindtap="selectStatus">已发布</text><text class="{{status === 'DISABLED' ? 'active' : ''}}" data-status="DISABLED" bindtap="selectStatus">已停用</text></view>
+  <view wx:if="{{loading && !items.length}}" class="empty">正在读取公告…</view>
+  <view wx:elif="{{!items.length}}" class="empty">暂无公告记录</view>
+  <view class="announcement" wx:for="{{items}}" wx:key="_id">
+    <view class="announcement-number">{{index + 1 < 10 ? '0' + (index + 1) : index + 1}}</view>
+    <view class="announcement-main"><view class="row between"><text class="announcement-title">{{item.title}}</text><text class="status status-{{item.status}}">{{item.statusText}}</text></view><text class="announcement-content">{{item.content}}</text><text class="announcement-time">{{item.startsAtText}} 至 {{item.endsAtText}}</text><view class="announcement-foot"><text>{{item.pushWechat ? '包含微信推送' : '仅站内公告'}}</text><text wx:if="{{item.canDisable}}" class="disable" data-id="{{item._id}}" bindtap="disable">停用公告</text></view></view>
+  </view>
+  <button class="publish-fixed" bindtap="openCreate">发布公告</button>
+
+  <view wx:if="{{editing}}" class="drawer-mask" bindtap="closeCreate"><view class="drawer" catchtap="noop">
+    <view class="drawer-head"><view><text class="head-kicker">PUBLISH NOTICE</text><text class="drawer-title">发布系统公告</text></view><text class="close" bindtap="closeCreate">关闭</text></view>
+    <view class="field"><text class="label">公告标题</text><input class="input" value="{{form.title}}" data-key="title" maxlength="60" bindinput="input" placeholder="例如：实验室开放时间调整"/></view>
+    <view class="field"><text class="label">公告正文</text><textarea class="textarea" value="{{form.content}}" data-key="content" maxlength="2000" bindinput="input" placeholder="填写需要成员了解的具体信息"></textarea></view>
+    <text class="label">生效时间</text><view class="date-row"><picker mode="date" value="{{form.startDate}}" data-key="startDate" bindchange="dateTimeChange"><view class="picker">{{form.startDate}}</view></picker><picker mode="time" value="{{form.startTime}}" data-key="startTime" bindchange="dateTimeChange"><view class="picker">{{form.startTime}}</view></picker></view>
+    <text class="label end-label">结束时间</text><view class="date-row"><picker mode="date" value="{{form.endDate}}" data-key="endDate" bindchange="dateTimeChange"><view class="picker">{{form.endDate}}</view></picker><picker mode="time" value="{{form.endTime}}" data-key="endTime" bindchange="dateTimeChange"><view class="picker">{{form.endTime}}</view></picker></view>
+    <view class="wechat-row"><view><text>同步微信订阅消息</text><text>仅在模板已配置且用户授权时发送</text></view><switch color="#176b5b" checked="{{form.pushWechat}}" bindchange="pushChange"/></view>
+    <button class="button publish" loading="{{saving}}" disabled="{{saving}}" bindtap="publish">确认发布</button>
+  </view></view>
+</view>

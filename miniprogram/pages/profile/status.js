@@ -13,5 +13,6 @@ Page({
     this.setData({ user, statusIcon: view.icon, statusTitle: view.title, statusCopy: view.copy, statusClass: view.className })
   },
   edit() { wx.redirectTo({ url: '/pages/profile/register' }) },
+  messages() { wx.navigateTo({ url: '/pages/notifications/index' }) },
   refresh() { getApp().clearSession(); this.onShow() }
 })

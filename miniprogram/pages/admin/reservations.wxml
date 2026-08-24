@@ -1,0 +1,36 @@
+<view class="overview-page">
+  <view class="hero"><text class="kicker">LAB SCHEDULE</text><text class="title">预约调度台</text><text class="subtitle">查看全部设备占用并处理特殊情况</text></view>
+  <view class="quick-actions"><button class="button create" bindtap="create">代用户预约</button><button class="quick" bindtap="blocks">禁用时段</button><button class="quick" bindtap="rules">规则配置</button></view>
+  <view class="toolbar"><view class="segments"><view wx:for="{{views}}" wx:key="key" class="segment {{view === item.key ? 'active' : ''}}" data-key="{{item.key}}" bindtap="switchView">{{item.label}}</view></view><picker range="{{deviceNames}}" value="{{deviceIndex}}" bindchange="deviceChange"><view class="filter"><text class="filter-label">{{deviceNames[deviceIndex]}}</text><view class="filter-arrow"></view></view></picker></view>
+  <view wx:if="{{view === 'CALENDAR'}}" class="calendar cardless"><view class="month-nav"><text data-delta="-1" bindtap="changeMonth">‹</text><text class="month-title">{{monthTitle}}</text><text data-delta="1" bindtap="changeMonth">›</text></view><view class="week"><text wx:for="{{weekdays}}" wx:key="*this">{{item}}</text></view><view class="days"><view wx:for="{{calendarDays}}" wx:key="key" class="day {{item.empty ? 'empty-day' : ''}} {{item.selected ? 'selected' : ''}} {{item.today ? 'today' : ''}}" data-value="{{item.value}}" bindtap="selectDay"><text wx:if="{{!item.empty}}">{{item.day}}</text><text wx:if="{{item.count}}" class="count">{{item.count}}</text></view></view></view>
+  <view class="list-heading"><view><text class="list-date">{{selectedDate}}</text><text class="list-count">共 {{total}} 条预约</text></view><picker mode="date" value="{{selectedDate}}" bindchange="dateChange"><text class="date-action">选择日期</text></picker></view>
+  <view class="usage-summary"><view><text>{{summary.checkedInCount || 0}}</text><text>已签到</text></view><view><text>{{summary.completedCount || 0}}</text><text>已完成</text></view><view class="duration-summary"><text>{{summary.actualDurationText || '0 分钟'}}</text><text>累计实际使用</text></view></view>
+  <view wx:if="{{!items.length && !loading}}" class="empty">当前筛选下暂无预约</view>
+  <view wx:for="{{items}}" wx:key="_id" class="booking" data-id="{{item._id}}" bindtap="openDetail"><view class="time-rail"><text>{{item.timeText}}</text><view class="rail"></view></view><view class="booking-main"><view class="row between"><text class="device">{{item.deviceName}}</text><text class="status {{item.category}}">{{item.statusText}}</text></view><text class="owner">{{item.userName}} · {{item.studentNo || '学号未录入'}}</text><text class="reason">{{item.reasonSummary || '未填写事由'}}</text></view></view>
+  <button wx:if="{{hasMore}}" class="more" bindtap="loadMore">加载更多</button>
+  <view wx:if="{{detailVisible}}" class="mask" bindtap="closeDetail"><view class="sheet" catchtap="noop"><view class="sheet-head"><view><text class="sheet-kicker">RESERVATION DETAIL</text><text class="sheet-title">预约详情</text></view><text class="close" bindtap="closeDetail">关闭</text></view><view class="detail-grid"><view><text>预约人</text><text>{{detail.userName}} · {{detail.studentNo || '—'}}</text></view><view><text>设备</text><text>{{detail.deviceName}} · {{detail.deviceNo || '—'}}</text></view><view><text>时间</text><text>{{detail.date}} {{detail.timeText}}</text></view><view><text>状态</text><text>{{detail.statusText}}</text></view><view class="full"><text>预约事由</text><text>{{detail.reason || '未填写'}}</text></view><view wx:if="{{detail.checkedInAtText}}"><text>签到时间</text><text>{{detail.checkedInAtText}}</text></view><view wx:if="{{detail.checkedOutAtText}}"><text>签退时间</text><text>{{detail.checkedOutAtText}}</text></view><view wx:if="{{detail.actualDurationText}}"><text>实际使用</text><text>{{detail.actualDurationText}}</text></view><view wx:if="{{detail.checkInSourceText}}"><text>签到方式</text><text>{{detail.checkInSourceText}}</text></view><view wx:if="{{detail.checkInDistanceMeters !== null}}" class="full"><text>签到位置</text><text>{{detail.checkInSiteName || '实验室'}} · 距设置点 {{detail.checkInDistanceMeters}} 米</text></view><view wx:if="{{detail.cancelReason}}" class="full"><text>取消原因</text><text>{{detail.cancelReason}}</text></view></view><view class="detail-actions"><button wx:if="{{detail.canAdminCheckIn}}" class="override-button check-in-admin" data-type="CHECK_IN" bindtap="openOverride">代用户签到</button><button wx:if="{{detail.canAdminCheckOut}}" class="override-button check-out-admin" data-type="CHECK_OUT" bindtap="openOverride">代用户签退</button><button wx:if="{{detail.canCancel}}" class="cancel-button" bindtap="cancel">取消该预约</button></view></view></view>
+  <view wx:if="{{cancelVisible}}" class="cancel-mask" bindtap="closeCancel">
+    <view class="cancel-dialog" catchtap="noop">
+      <text class="cancel-kicker">CANCEL RESERVATION</text>
+      <text class="cancel-title">取消该预约？</text>
+      <text class="cancel-copy">取消后，{{detail.date}} {{detail.timeText}} 将重新开放给其他成员。</text>
+      <view class="cancel-field">
+        <textarea class="cancel-reason" value="{{cancelReason}}" maxlength="200" cursor-spacing="24" bindinput="cancelReasonInput" placeholder="填写取消原因，例如：设备临时故障"></textarea>
+        <text class="cancel-count">{{cancelReasonCount}} / 200</text>
+      </view>
+      <view class="cancel-actions">
+        <button class="cancel-back" disabled="{{cancelling}}" bindtap="closeCancel">返回</button>
+        <button class="cancel-confirm" loading="{{cancelling}}" disabled="{{cancelling}}" bindtap="confirmCancel">确认取消</button>
+      </view>
+    </view>
+  </view>
+  <view wx:if="{{overrideVisible}}" class="cancel-mask" bindtap="closeOverride">
+    <view class="cancel-dialog" catchtap="noop">
+      <text class="override-kicker">ADMIN OVERRIDE</text>
+      <text class="cancel-title">{{overrideType === 'CHECK_IN' ? '代用户签到？' : '代用户签退？'}}</text>
+      <text class="cancel-copy">{{overrideType === 'CHECK_IN' ? '仅用于用户定位失败等现场特殊情况。' : '签退后将按服务器时间计算实际使用时长。'}}</text>
+      <view class="cancel-field"><textarea class="cancel-reason" value="{{overrideReason}}" maxlength="200" cursor-spacing="24" bindinput="overrideReasonInput" placeholder="填写操作原因"></textarea><text class="cancel-count">{{overrideReasonCount}} / 200</text></view>
+      <view class="cancel-actions"><button class="cancel-back" disabled="{{overriding}}" bindtap="closeOverride">返回</button><button class="override-confirm" loading="{{overriding}}" disabled="{{overriding}}" bindtap="confirmOverride">确认操作</button></view>
+    </view>
+  </view>
+</view>

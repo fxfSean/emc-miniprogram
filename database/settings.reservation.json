@@ -3,8 +3,17 @@
   "inviteCode": "",
   "minDurationMinutes": 30,
   "maxDurationMinutes": 480,
-  "maxDailyMinutes": 480,
+  "maxDailyMinutes": 240,
   "maxActiveReservations": 3,
   "maxAdvanceDays": 7,
-  "cancelDeadlineMinutes": 30
+  "cancelDeadlineMinutes": 30,
+  "checkInMode": "GEOFENCE",
+  "checkInEarlyMinutes": 30,
+  "checkInRadiusMeters": 100,
+  "maxLocationAccuracyMeters": 150,
+  "checkInSite": {
+    "name": "主实验室",
+    "latitude": null,
+    "longitude": null
+  }
 }

@@ -23,7 +23,7 @@ exports.main = async event => {
       const existing = await db.collection('users').where({ openid }).limit(1).get()
       if (existing.data[0] && existing.data[0].status === 'DISABLED') return fail('账号已被禁用，请联系管理员')
       const now = db.serverDate()
-      const data = { openid, name, studentNo, advisor, phone, status: 'PENDING', reviewNote: '', updatedAt: now }
+      const data = { openid, name, studentNo, advisor, phone, status: 'PENDING', reviewNote: '', reviewVersion: Math.max(0, Number((existing.data[0] || {}).reviewVersion) || 0), updatedAt: now }
       if (existing.data.length) await db.collection('users').doc(existing.data[0]._id).update({ data })
       else await db.collection('users').add({ data: { ...data, role: 'USER', createdAt: now } })
       return ok(true)

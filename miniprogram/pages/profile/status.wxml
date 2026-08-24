@@ -4,5 +4,6 @@
   <view class="muted status-copy">{{statusCopy}}</view>
   <view class="card info"><view class="row between"><text>姓名</text><text>{{user.name}}</text></view><view class="row between"><text>学号 / 工号</text><text>{{user.studentNo}}</text></view><view class="row between"><text>导师</text><text>{{user.advisor}}</text></view></view>
   <button wx:if="{{user.status === 'REJECTED'}}" class="button" bindtap="edit">修改并重新提交</button>
+  <button class="button secondary" bindtap="messages">查看消息通知</button>
   <button class="button secondary" bindtap="refresh">刷新状态</button>
 </view>

@@ -1,0 +1,28 @@
+<view class="page notification-page">
+  <view class="message-head">
+    <view><text class="head-kicker">MESSAGE LOG</text><text class="head-title">消息通知</text><text class="head-copy">{{unreadCount ? '有 ' + unreadCount + ' 条消息待查看' : '消息均已查看'}}</text></view>
+    <text class="mark-all {{unreadCount ? '' : 'disabled'}}" bindtap="markAll">全部已读</text>
+  </view>
+
+  <view class="subscribe-strip">
+    <view><text class="subscribe-title">微信订阅提醒</text><text class="subscribe-copy">{{wechatConfigured ? '授权后可在微信中接收重要提醒' : '模板未配置，当前仅发送站内消息'}}</text></view>
+    <button class="subscribe-button" bindtap="enableWechat">开启提醒</button>
+  </view>
+
+  <view wx:if="{{loading && !items.length}}" class="empty">正在读取消息…</view>
+  <view wx:elif="{{!items.length}}" class="empty"><text class="empty-title">暂无消息</text><text>审核、预约及公告消息会显示在这里</text></view>
+
+  <view class="timeline" wx:else>
+    <view class="message-row" wx:for="{{items}}" wx:key="_id">
+      <view class="time-rail"><text>{{item.datePart}}</text><text>{{item.timePart}}</text><view class="rail-dot {{item.read ? 'read' : 'unread'}}"></view></view>
+      <view class="message-block {{item.read ? 'read' : 'unread'}}" data-id="{{item._id}}" bindtap="toggle">
+        <view class="message-meta"><text class="type type-{{item.type}}">{{item.typeLabel}}</text><text>{{item.expanded ? '收起' : '展开'}}</text></view>
+        <text class="message-title">{{item.title}}</text>
+        <text class="message-content {{item.expanded ? 'expanded' : ''}}">{{item.content}}</text>
+        <text wx:if="{{item.kind === 'ANNOUNCEMENT' && item.validityText}}" class="validity">有效期：{{item.validityText}}</text>
+        <button wx:if="{{item.expanded && item.navigation}}" class="business-link" data-id="{{item._id}}" catchtap="openBusiness">查看相关信息</button>
+      </view>
+    </view>
+  </view>
+  <view wx:if="{{loadingMore}}" class="load-more">正在加载…</view>
+</view>

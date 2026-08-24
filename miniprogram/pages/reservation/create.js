@@ -1,4 +1,5 @@
 const { call } = require('../../utils/cloud')
+const { requestNotificationTemplates, saveSubscriptionResults } = require('../../utils/notifications')
 
 const pad = n => String(n).padStart(2, '0')
 const formatDate = date => `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`
@@ -26,6 +27,7 @@ Page({
     selectionText: '请选择连续空闲时段',
     reason: '',
     maxAdvanceDays: 7,
+    ruleTexts: ['每人每天最多预约 4 小时', '每人最多同时持有 3 个有效预约', '可预约未来 7 天内的时段（以当前时间为准）'],
     loading: true,
     submitting: false
   },
@@ -100,11 +102,19 @@ Page({
       const result = await call('reservation', 'availability', { deviceId: this.deviceId, date: this.data.date })
       if (requestId !== this.availabilityRequestId) return
       const availability = Array.isArray(result) ? { reservations: result, blocks: [] } : result
-      const maxAdvanceDays = Number(availability.maxAdvanceDays || this.data.maxAdvanceDays)
+      const rules = availability.rules || {}
+      const maxAdvanceDays = Number(rules.maxAdvanceDays || availability.maxAdvanceDays || this.data.maxAdvanceDays)
+      const dailyMinutes = Number(rules.maxDailyMinutes || 240)
+      const dailyText = dailyMinutes % 60 === 0 ? `${dailyMinutes / 60} 小时` : `${dailyMinutes} 分钟`
+      const activeCount = Number(rules.maxActiveReservations || 3)
       this.selectedStartIndex = -1
       this.selectedEndIndex = -1
       this.baseSlots = this.createSlots(availability.reservations || [], availability.blocks || [])
-      this.setData({ maxAdvanceDays, startTime: '', endTime: '', hasSelection: false, selectionText: '请选择连续空闲时段', timeSlots: this.baseSlots })
+      this.setData({
+        maxAdvanceDays,
+        ruleTexts: [`每人每天最多预约 ${dailyText}`, `每人最多同时持有 ${activeCount} 个有效预约`, `可预约未来 ${maxAdvanceDays} 天内的时段（以当前时间为准）`],
+        startTime: '', endTime: '', hasSelection: false, selectionText: '请选择连续空闲时段', timeSlots: this.baseSlots
+      })
       this.buildCalendar()
     } finally {
       if (requestId === this.availabilityRequestId) this.setData({ loading: false })
@@ -182,6 +192,8 @@ Page({
     if (!reason.trim()) return wx.showToast({ title: '请填写实验内容', icon: 'none' })
     this.setData({ submitting: true })
     try {
+      const subscriptionResults = await requestNotificationTemplates(['reservationCreated', 'reservationCancelled', 'reminder'])
+      await saveSubscriptionResults(subscriptionResults)
       await call('reservation', 'create', { deviceId: this.deviceId, date, startTime, endTime, reason: reason.trim() })
       wx.showToast({ title: '预约成功' })
       setTimeout(() => wx.switchTab({ url: '/pages/mine/index' }), 600)

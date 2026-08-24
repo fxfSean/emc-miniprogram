@@ -5,3 +5,5 @@
 .menu { display: flex; justify-content: space-between; font-size: 31rpx; }
 .menu-title { display: block; }
 .menu-desc { display: block; margin-top: 8rpx; color: #77817d; font-size: 23rpx; }
+.primary-menu { border-left: 7rpx solid #176b5b; }
+.message-menu { border-left: 7rpx solid #925d10; }

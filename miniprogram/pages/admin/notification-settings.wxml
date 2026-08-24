@@ -1,0 +1,12 @@
+<view class="page settings-page">
+  <view class="settings-head"><text class="head-kicker">NOTIFICATION CONTROL</text><text class="head-title">通知设置</text><text class="head-copy">模板未配置时，系统仍会正常发送站内消息</text></view>
+  <view class="section-block"><text class="section-number">01</text><view class="section-main"><text class="section-title">预约开始提醒</text><text class="section-copy">定时任务每 5 分钟检查一次待开始预约</text><picker range="{{reminderOptions}}" value="{{reminderIndex}}" bindchange="reminderChange"><view class="picker reminder-picker">{{reminderOptions[reminderIndex]}}</view></picker></view></view>
+  <view class="section-block"><text class="section-number">02</text><view class="section-main"><view class="row between"><view><text class="section-title">公告微信推送</text><text class="section-copy">发布公告时允许管理员选择微信推送</text></view><switch color="#176b5b" checked="{{announcementWechatEnabled}}" bindchange="announcementChange"/></view></view></view>
+  <view class="template-head"><text>订阅消息模板</text><text>模板 ID 与字段以微信公众平台实际模板为准</text></view>
+  <view class="template" wx:for="{{templates}}" wx:key="key">
+    <view class="template-title"><text>{{index + 1 < 10 ? '0' + (index + 1) : index + 1}} · {{item.label}}</text><text class="template-status {{item.configured ? 'configured' : ''}}">{{item.configured ? '已配置' : '仅站内消息'}}</text></view>
+    <input class="input" value="{{item.templateId}}" data-index="{{index}}" data-field="templateId" bindinput="templateInput" placeholder="填写模板 ID；留空则不发送微信消息"/>
+    <textarea class="mapping" value="{{item.fieldsText}}" data-index="{{index}}" data-field="fieldsText" bindinput="templateInput" auto-height maxlength="500" placeholder="字段映射 JSON"></textarea>
+  </view>
+  <button class="button save" loading="{{saving}}" disabled="{{saving || loading}}" bindtap="save">保存通知设置</button>
+</view>

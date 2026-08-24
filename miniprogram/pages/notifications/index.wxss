@@ -1,0 +1,38 @@
+.notification-page { padding-bottom: 60rpx; }
+.message-head { display: flex; align-items: flex-end; justify-content: space-between; padding: 20rpx 4rpx 26rpx; }
+.head-kicker,.head-title,.head-copy { display: block; }
+.head-kicker { color: #176b5b; font: 700 19rpx Georgia, serif; letter-spacing: 3rpx; }
+.head-title { margin-top: 8rpx; color: #1d2925; font-size: 44rpx; font-weight: 700; }
+.head-copy { margin-top: 8rpx; color: #77817d; font-size: 23rpx; }
+.mark-all { padding: 12rpx 0 6rpx 22rpx; color: #176b5b; font-size: 24rpx; }
+.mark-all.disabled { color: #a2aaa7; }
+.subscribe-strip { display: flex; align-items: center; justify-content: space-between; gap: 22rpx; margin-bottom: 30rpx; padding: 22rpx 24rpx; background: #e8f2ef; border-left: 6rpx solid #176b5b; border-radius: 8rpx; }
+.subscribe-strip view { flex: 1; min-width: 0; }
+.subscribe-title,.subscribe-copy { display: block; }
+.subscribe-title { color: #1d2925; font-size: 27rpx; font-weight: 700; }
+.subscribe-copy { margin-top: 6rpx; color: #687078; font-size: 21rpx; line-height: 1.5; }
+.subscribe-button { flex: none; width: 150rpx; height: 64rpx; margin: 0; padding: 0; color: #176b5b; background: #fff; border-radius: 8rpx; font-size: 23rpx; line-height: 64rpx; }
+.subscribe-button::after,.business-link::after { border: 0; }
+.empty { display: flex; flex-direction: column; gap: 12rpx; padding: 120rpx 20rpx; text-align: left; }
+.empty-title { color: #1d2925; font-size: 32rpx; font-weight: 700; }
+.timeline { position: relative; }
+.timeline::before { position: absolute; top: 20rpx; bottom: 20rpx; left: 103rpx; width: 1rpx; background: #dce1df; content: ''; }
+.message-row { position: relative; display: grid; grid-template-columns: 104rpx 1fr; gap: 22rpx; margin-bottom: 20rpx; }
+.time-rail { position: relative; padding-top: 20rpx; color: #77817d; font: 22rpx Georgia, serif; text-align: left; }
+.time-rail text { display: block; }
+.time-rail text + text { margin-top: 4rpx; font-size: 19rpx; }
+.rail-dot { position: absolute; z-index: 1; top: 25rpx; right: -7rpx; width: 13rpx; height: 13rpx; box-sizing: border-box; border-radius: 50%; }
+.rail-dot.unread { background: #176b5b; border: 3rpx solid #dcebe7; }
+.rail-dot.read { background: #fff; border: 2rpx solid #aeb7b3; }
+.message-block { position: relative; min-width: 0; padding: 22rpx 24rpx; background: #fff; border: 1rpx solid #e3e7e5; border-radius: 10rpx; }
+.message-block.unread { border-left: 6rpx solid #176b5b; }
+.message-meta { display: flex; justify-content: space-between; color: #89918e; font-size: 19rpx; }
+.type { color: #176b5b; font-weight: 700; letter-spacing: 1rpx; }
+.type-RESERVATION_CANCELLED,.type-DEVICE_MAINTENANCE { color: #b64a43; }
+.type-RESERVATION_REMINDER { color: #925d10; }
+.message-title { display: block; margin-top: 12rpx; color: #1d2925; font-size: 29rpx; font-weight: 700; }
+.message-content { display: -webkit-box; overflow: hidden; margin-top: 10rpx; color: #687078; font-size: 23rpx; line-height: 1.6; -webkit-box-orient: vertical; -webkit-line-clamp: 2; }
+.message-content.expanded { display: block; overflow: visible; }
+.validity { display: block; margin-top: 14rpx; color: #89918e; font-size: 20rpx; }
+.business-link { width: 100%; height: 64rpx; margin: 18rpx 0 0; padding: 0; color: #176b5b; background: #e8f2ef; border-radius: 7rpx; font-size: 23rpx; line-height: 64rpx; }
+.load-more { padding: 20rpx; color: #77817d; font-size: 22rpx; text-align: center; }

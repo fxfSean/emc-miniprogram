@@ -1,0 +1,13 @@
+{
+  "_id": "notification",
+  "reminderMinutes": 30,
+  "announcementWechatEnabled": false,
+  "templates": {
+    "review": { "templateId": "", "fields": {} },
+    "reservationCreated": { "templateId": "", "fields": {} },
+    "reservationCancelled": { "templateId": "", "fields": {} },
+    "reminder": { "templateId": "", "fields": {} },
+    "maintenance": { "templateId": "", "fields": {} },
+    "announcement": { "templateId": "", "fields": {} }
+  }
+}
