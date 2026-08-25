@@ -4,13 +4,13 @@
     <text class="mark-all {{unreadCount ? '' : 'disabled'}}" bindtap="markAll">全部已读</text>
   </view>
 
-  <view class="subscribe-strip">
+  <view wx:if="{{showWechatSubscription}}" class="subscribe-strip">
     <view><text class="subscribe-title">微信订阅提醒</text><text class="subscribe-copy">{{wechatConfigured ? '授权后可在微信中接收重要提醒' : '模板未配置，当前仅发送站内消息'}}</text></view>
     <button class="subscribe-button" bindtap="enableWechat">开启提醒</button>
   </view>
 
   <view wx:if="{{loading && !items.length}}" class="empty">正在读取消息…</view>
-  <view wx:elif="{{!items.length}}" class="empty"><text class="empty-title">暂无消息</text><text>审核、预约及公告消息会显示在这里</text></view>
+  <view wx:elif="{{!items.length}}" class="empty" style="height: 220rpx; display: flex; box-sizing: border-box"><text class="empty-title">暂无消息</text><text>审核、预约及公告消息会显示在这里</text></view>
 
   <view class="timeline" wx:else>
     <view class="message-row" wx:for="{{items}}" wx:key="_id">

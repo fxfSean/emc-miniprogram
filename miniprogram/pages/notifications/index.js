@@ -7,7 +7,7 @@ const TYPE_LABELS = {
 }
 
 Page({
-  data: { items: [], page: 1, hasMore: false, loading: false, loadingMore: false, unreadCount: 0, wechatConfigured: false },
+  data: { showWechatSubscription: false, items: [], page: 1, hasMore: false, loading: false, loadingMore: false, unreadCount: 0, wechatConfigured: false },
   async onShow() { if (!this.loaded) await this.refresh(); else await this.loadSummary() },
   async onPullDownRefresh() { await this.refresh(); wx.stopPullDownRefresh() },
   async onReachBottom() { if (this.data.hasMore && !this.data.loadingMore) await this.loadMore() },
