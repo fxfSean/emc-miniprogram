@@ -3,7 +3,9 @@ cloud.init({ env: cloud.DYNAMIC_CURRENT_ENV })
 const db = cloud.database()
 const ok = data => ({ ok: true, data })
 const fail = message => ({ ok: false, message })
+console.log('初始化user 云函数')
 exports.main = async event => {
+  console.log('收到的event参数：', event)
   const openid = cloud.getWXContext().OPENID
   try {
     if (!openid) return fail('无法获取微信身份')
