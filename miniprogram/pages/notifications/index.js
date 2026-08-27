@@ -1,5 +1,5 @@
 const { call } = require('../../utils/cloud')
-const { requestNotificationTemplates, saveSubscriptionResults } = require('../../utils/notifications')
+const { loadNotificationTemplateIds, requestNotificationTemplates, saveSubscriptionResults, subscriptionOutcomeMessage } = require('../../utils/notifications')
 
 const TYPE_LABELS = {
   REVIEW_RESULT: '审核结果', RESERVATION_CREATED: '预约成功', RESERVATION_CANCELLED: '预约取消',
@@ -7,8 +7,11 @@ const TYPE_LABELS = {
 }
 
 Page({
-  data: { showWechatSubscription: false, items: [], page: 1, hasMore: false, loading: false, loadingMore: false, unreadCount: 0, wechatConfigured: false },
-  async onShow() { if (!this.loaded) await this.refresh(); else await this.loadSummary() },
+  data: { showWechatSubscription: true, items: [], page: 1, hasMore: false, loading: false, loadingMore: false, unreadCount: 0, wechatConfigured: false, subscriptionTemplatesReady: false },
+  async onShow() {
+    const loadPage = this.loaded ? this.loadSummary() : this.refresh()
+    await Promise.all([loadPage, this.prepareSubscriptionTemplates()])
+  },
   async onPullDownRefresh() { await this.refresh(); wx.stopPullDownRefresh() },
   async onReachBottom() { if (this.data.hasMore && !this.data.loadingMore) await this.loadMore() },
   decorate(items) {
@@ -17,6 +20,15 @@ Page({
   async loadSummary() {
     const summary = await call('notification', 'summary')
     this.setData({ unreadCount: summary.unreadCount || 0, wechatConfigured: summary.wechatConfigured === true })
+  },
+  async prepareSubscriptionTemplates() {
+    try {
+      this.subscriptionTemplateIds = await loadNotificationTemplateIds(['review', 'maintenance', 'announcement'])
+      this.setData({ subscriptionTemplatesReady: true })
+    } catch (error) {
+      this.subscriptionTemplateIds = []
+      this.setData({ subscriptionTemplatesReady: false })
+    }
   },
   async refresh() {
     if (this.data.loading) return
@@ -51,10 +63,10 @@ Page({
     wx.showToast({ title: '已全部标记为已读' })
   },
   async enableWechat() {
-    const results = await requestNotificationTemplates(['review', 'maintenance', 'announcement'])
-    await saveSubscriptionResults(results)
-    if (Object.values(results).includes('accept')) wx.showToast({ title: '微信提醒已开启' })
-    else wx.showToast({ title: this.data.wechatConfigured ? '未开启微信提醒' : '管理员尚未配置模板', icon: 'none' })
+    if (!this.data.subscriptionTemplatesReady) return wx.showToast({ title: '提醒配置正在加载，请稍后再试', icon: 'none' })
+    const outcome = await requestNotificationTemplates(this.subscriptionTemplateIds)
+    await saveSubscriptionResults(outcome.results)
+    wx.showToast({ title: subscriptionOutcomeMessage(outcome), icon: outcome.status === 'ACCEPTED' ? 'success' : 'none' })
   },
   openBusiness(e) {
     const item = this.data.items.find(row => row._id === e.currentTarget.dataset.id)

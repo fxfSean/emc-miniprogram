@@ -1,5 +1,5 @@
 const { call } = require('../../utils/cloud')
-const { requestNotificationTemplates, saveSubscriptionResults } = require('../../utils/notifications')
+const { loadNotificationTemplateIds, requestNotificationTemplates, saveSubscriptionResults } = require('../../utils/notifications')
 
 const pad = n => String(n).padStart(2, '0')
 const formatDate = date => `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`
@@ -41,9 +41,15 @@ Page({
     this.selectedEndIndex = -1
     this.baseSlots = []
     this.buildCalendar()
+    this.prepareSubscriptionTemplates()
   },
 
   async onShow() { await this.load() },
+
+  async prepareSubscriptionTemplates() {
+    try { this.subscriptionTemplateIds = await loadNotificationTemplateIds(['reservationCreated', 'reservationCancelled', 'reminder']) }
+    catch (error) { this.subscriptionTemplateIds = [] }
+  },
 
   buildCalendar() {
     const { date, maxAdvanceDays } = this.data
@@ -192,8 +198,8 @@ Page({
     if (!reason.trim()) return wx.showToast({ title: '请填写实验内容', icon: 'none' })
     this.setData({ submitting: true })
     try {
-      const subscriptionResults = await requestNotificationTemplates(['reservationCreated', 'reservationCancelled', 'reminder'])
-      await saveSubscriptionResults(subscriptionResults)
+      const subscriptionOutcome = await requestNotificationTemplates(this.subscriptionTemplateIds)
+      await saveSubscriptionResults(subscriptionOutcome.results)
       await call('reservation', 'create', { deviceId: this.deviceId, date, startTime, endTime, reason: reason.trim() })
       wx.showToast({ title: '预约成功' })
       setTimeout(() => wx.switchTab({ url: '/pages/mine/index' }), 600)

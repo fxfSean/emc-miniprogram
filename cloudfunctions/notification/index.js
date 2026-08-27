@@ -16,6 +16,8 @@ const TEMPLATE_SEMANTICS = {
   maintenance: ['device', 'time', 'reason'],
   announcement: ['title', 'time', 'content']
 }
+const MINIPROGRAM_STATE = 'developer'
+const MINIPROGRAM_LANG = 'zh_CN'
 const DEFAULT_SETTINGS = {
   reminderMinutes: 30,
   announcementWechatEnabled: false,
@@ -35,6 +37,10 @@ function formatDateTime(value) {
 }
 function short(value, limit = 100) { return String(value || '').trim().slice(0, limit) }
 function safeId(value) { return String(value || '').replace(/[^a-zA-Z0-9_-]/g, '_').slice(0, 240) }
+function maskIdentifier(value) {
+  const text = String(value || '')
+  return text.length > 8 ? `${text.slice(0, 4)}***${text.slice(-4)}` : '***'
+}
 function normalizeTemplate(value, key) {
   const source = value || {}, fields = source.fields || {}, allowed = TEMPLATE_SEMANTICS[key]
   const normalizedFields = {}
@@ -296,11 +302,37 @@ async function sendSubscription({ deliveryId, notification, delivery, settings, 
     return 'SKIPPED'
   }
   try {
-    const result = await cloud.openapi.subscribeMessage.send({ touser: targetUser.openid, page: delivery ? delivery.page : 'pages/notifications/index', templateId: template.templateId, data: templateData(template, payload || {}) })
+    const sendParams = {
+      touser: targetUser.openid,
+      page: delivery ? delivery.page : 'pages/notifications/index',
+      templateId: template.templateId,
+      data: templateData(template, payload || {}),
+      miniprogramState: MINIPROGRAM_STATE,
+      lang: MINIPROGRAM_LANG
+    }
+    console.info('subscribe message send start', {
+      deliveryId,
+      notificationId: base.notificationId,
+      templateKey,
+      params: { ...sendParams, touser: maskIdentifier(sendParams.touser) }
+    })
+    const result = await cloud.openapi.subscribeMessage.send(sendParams)
+    console.info('subscribe message send success', {
+      deliveryId,
+      templateKey,
+      errCode: result.errCode || 0,
+      errMsg: short(result.errMsg, 120)
+    })
     await db.collection('notification_deliveries').doc(deliveryId).set({ data: { ...base, attempts: attempts + 1, status: 'SENT', resultCode: String(result.errCode || 0), resultMessage: '发送成功', attemptedAt: db.serverDate(), createdAt: (existingDelivery || {}).createdAt || db.serverDate() } })
     return 'SENT'
   } catch (error) {
     const code = String(error.errCode || error.code || 'SEND_FAILED').slice(0, 40)
+    console.error('subscribe message send failed', {
+      deliveryId,
+      templateKey,
+      code,
+      message: short(error.errMsg || error.message || '发送失败', 120)
+    })
     const retryable = ['-1', '45009', 'SYSTEM_ERROR', 'SEND_FAILED'].includes(code), status = retryable && attempts < 1 ? 'PENDING' : 'FAILED'
     await db.collection('notification_deliveries').doc(deliveryId).set({ data: { ...base, attempts: attempts + 1, status, resultCode: code, resultMessage: short(error.errMsg || error.message || '发送失败', 120), attemptedAt: db.serverDate(), createdAt: (existingDelivery || {}).createdAt || db.serverDate() } })
     return status
