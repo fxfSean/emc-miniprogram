@@ -1,7 +1,7 @@
 .status-page { text-align: center; padding-top: 110rpx; }
-.status-icon { margin: 0 auto 30rpx; width: 96rpx; height: 96rpx; line-height: 92rpx; border-radius: 50%; color: #176b5b; background: #e8f2ef; font-size: 48rpx; font-weight: 700; }
+.status-icon { display: flex; align-items: center; justify-content: center; margin: 0 auto 30rpx; width: 96rpx; height: 96rpx; border-radius: 50%; color: #176b5b; background: #e8f2ef; }
 .status-icon.rejected { color: #b64a43; background: #f9eaea; }
-.status-icon.disabled { color: #687078; background: #e7eae8; font-size: 36rpx; }
+.status-icon.disabled { color: #687078; background: #e7eae8; }
 .status-title { font-size: 38rpx; font-weight: 700; }
 .status-copy { margin: 16rpx 40rpx 42rpx; }
 .info { text-align: left; }

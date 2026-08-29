@@ -13,6 +13,9 @@
     "navigationBarTextStyle": "black",
     "backgroundColor": "#f7f8fa"
   },
+  "usingComponents": {
+    "app-icon": "/components/app-icon/index"
+  },
   "permission": {
     "scope.userLocation": {
       "desc": "用于确认用户到达实验室后完成设备预约签到"
@@ -22,8 +25,8 @@
   "tabBar": {
     "color": "#687078", "selectedColor": "#176b5b", "backgroundColor": "#ffffff",
     "list": [
-      { "pagePath": "pages/home/index", "text": "设备" },
-      { "pagePath": "pages/mine/index", "text": "我的" }
+      { "pagePath": "pages/home/index", "text": "设备", "iconPath": "assets/tabbar/device.png", "selectedIconPath": "assets/tabbar/device-active.png" },
+      { "pagePath": "pages/mine/index", "text": "我的", "iconPath": "assets/tabbar/user.png", "selectedIconPath": "assets/tabbar/user-active.png" }
     ]
   },
   "style": "v2", "sitemapLocation": "sitemap.json"

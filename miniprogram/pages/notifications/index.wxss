@@ -1,10 +1,11 @@
 .notification-page { padding-bottom: 60rpx; }
 .message-head { display: flex; align-items: flex-end; justify-content: space-between; padding: 20rpx 4rpx 26rpx; }
 .head-kicker,.head-title,.head-copy { display: block; }
+.head-title-row { display: flex; align-items: center; gap: 12rpx; margin-top: 8rpx; color: #176b5b; }
 .head-kicker { color: #176b5b; font: 700 19rpx Georgia, serif; letter-spacing: 3rpx; }
-.head-title { margin-top: 8rpx; color: #1d2925; font-size: 44rpx; font-weight: 700; }
+.head-title { color: #1d2925; font-size: 44rpx; font-weight: 700; }
 .head-copy { margin-top: 8rpx; color: #77817d; font-size: 23rpx; }
-.mark-all { padding: 12rpx 0 6rpx 22rpx; color: #176b5b; font-size: 24rpx; }
+.mark-all { display: flex; align-items: center; gap: 7rpx; padding: 12rpx 0 6rpx 22rpx; color: #176b5b; font-size: 24rpx; }
 .mark-all.disabled { color: #a2aaa7; }
 .subscribe-strip { display: flex; align-items: center; justify-content: space-between; gap: 22rpx; margin-bottom: 30rpx; padding: 22rpx 24rpx; background: #e8f2ef; border-left: 6rpx solid #176b5b; border-radius: 8rpx; }
 .subscribe-strip view { flex: 1; min-width: 0; }
@@ -27,6 +28,9 @@
 .message-block { position: relative; min-width: 0; padding: 22rpx 24rpx; background: #fff; border: 1rpx solid #e3e7e5; border-radius: 10rpx; }
 .message-block.unread { border-left: 6rpx solid #176b5b; }
 .message-meta { display: flex; justify-content: space-between; color: #89918e; font-size: 19rpx; }
+.expand-control { display: flex; align-items: center; gap: 4rpx; }
+.expand-control app-icon { transition: transform .15s; }
+.expand-control.expanded app-icon { transform: rotate(90deg); }
 .type { color: #176b5b; font-weight: 700; letter-spacing: 1rpx; }
 .type-RESERVATION_CANCELLED,.type-DEVICE_MAINTENANCE { color: #b64a43; }
 .type-RESERVATION_REMINDER { color: #925d10; }

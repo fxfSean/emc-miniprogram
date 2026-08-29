@@ -18,7 +18,8 @@
 .filter-arrow::after { position: absolute; top: 3rpx; left: 1rpx; width: 0; height: 0; border-top: 8rpx solid #44514d; border-right: 6rpx solid transparent; border-left: 6rpx solid transparent; content: ''; }
 .calendar { padding: 24rpx; background: #fff; border: 1rpx solid #e3e7e5; border-radius: 12rpx; }
 .month-nav { display: flex; align-items: center; justify-content: space-between; padding-bottom: 20rpx; }
-.month-nav > text:not(.month-title) { padding: 4rpx 22rpx; color: #176b5b; font-size: 42rpx; }
+.month-arrow { display: flex; align-items: center; justify-content: center; padding: 10rpx 22rpx; color: #176b5b; }
+.month-arrow.previous app-icon { transform: rotate(180deg); }
 .month-title { font-weight: 700; }
 .week,.days { display: grid; grid-template-columns: repeat(7, 1fr); }
 .week text { padding: 8rpx 0 14rpx; color: #89918e; font-size: 21rpx; text-align: center; }

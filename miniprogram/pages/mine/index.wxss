@@ -2,22 +2,23 @@
 .profile-main { flex: 1; min-width: 0; padding-right: 18rpx; }
 .profile-actions { display: flex; flex: none; flex-direction: column; gap: 10rpx; }
 .profile-actions .button { min-width: 144rpx; }
+.icon-button { display: flex; align-items: center; justify-content: center; gap: 7rpx; }
 .name { display: block; font-size: 38rpx; font-weight: 700; }
 .identity { display: block; margin-top: 8rpx; }
 .notification-entry { display: flex; align-items: center; gap: 18rpx; margin-bottom: 24rpx; padding: 20rpx 22rpx; background: #fff; border: 1rpx solid #e3e7e5; border-left: 6rpx solid #176b5b; border-radius: 10rpx; }
-.notification-mark { display: flex; align-items: center; justify-content: center; flex: none; width: 70rpx; height: 58rpx; color: #176b5b; background: #e8f2ef; border-radius: 7rpx; font: 700 18rpx Georgia, serif; letter-spacing: 2rpx; }
+.notification-mark { display: flex; align-items: center; justify-content: center; flex: none; width: 70rpx; height: 58rpx; color: #176b5b; background: #e8f2ef; border-radius: 7rpx; }
 .notification-main { flex: 1; min-width: 0; }
 .notification-title,.notification-copy { display: block; }
 .notification-title { color: #1d2925; font-size: 27rpx; font-weight: 700; }
 .notification-copy { overflow: hidden; margin-top: 5rpx; color: #77817d; font-size: 21rpx; text-overflow: ellipsis; white-space: nowrap; }
 .notification-side { display: flex; align-items: center; gap: 12rpx; }
 .unread-count { min-width: 38rpx; height: 38rpx; padding: 0 10rpx; box-sizing: border-box; color: #fff; background: #b64a43; border-radius: 19rpx; font: 700 19rpx/38rpx Georgia, serif; text-align: center; }
-.entry-arrow { color: #89918e; font-size: 36rpx; line-height: 1; }
 .tabs { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; height: 76rpx; border-bottom: 1rpx solid #dce1df; margin-bottom: 24rpx; }
 .tab { text-align: center; line-height: 76rpx; color: #687078; font-size: 25rpx; }
 .tab.active { color: #176b5b; font-weight: 700; border-bottom: 4rpx solid #176b5b; }
 .device-name { font-size: 31rpx; font-weight: 650; }
 .time, .reason { display: block; margin-top: 14rpx; }
+.booking-time { display: flex; align-items: center; gap: 8rpx; color: #44514d; }
 .tag.status-IN_USE { color: #2563a6; background: #e6f0fa; }
 .tag.status-ENDED { color: #7a8581; background: #eef0ef; }
 .tag.status-CANCELLED { color: #b64a43; background: #f9eaea; }

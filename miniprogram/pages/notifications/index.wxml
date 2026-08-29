@@ -1,10 +1,11 @@
 <view class="page notification-page">
   <view class="message-head">
-    <view><text class="head-kicker">MESSAGE LOG</text><text class="head-title">消息通知</text><text class="head-copy">{{unreadCount ? '有 ' + unreadCount + ' 条消息待查看' : '消息均已查看'}}</text></view>
-    <text class="mark-all {{unreadCount ? '' : 'disabled'}}" bindtap="markAll">全部已读</text>
+    <view><text class="head-kicker">MESSAGE LOG</text><view class="head-title-row"><app-icon name="notification" size="38" /><text class="head-title">消息通知</text></view><text class="head-copy">{{unreadCount ? '有 ' + unreadCount + ' 条消息待查看' : '消息均已查看'}}</text></view>
+    <view class="mark-all {{unreadCount ? '' : 'disabled'}}" bindtap="markAll"><app-icon name="check-circle" size="23" /><text>全部已读</text></view>
   </view>
 
   <view wx:if="{{showWechatSubscription}}" class="subscribe-strip">
+    <app-icon name="notification" size="31" color="#176b5b" />
     <view><text class="subscribe-title">微信订阅提醒</text><text class="subscribe-copy">{{wechatConfigured ? '授权后可在微信中接收重要提醒' : '模板未配置，当前仅发送站内消息'}}</text></view>
     <button class="subscribe-button" bindtap="enableWechat">开启提醒</button>
   </view>
@@ -16,7 +17,7 @@
     <view class="message-row" wx:for="{{items}}" wx:key="_id">
       <view class="time-rail"><text>{{item.datePart}}</text><text>{{item.timePart}}</text><view class="rail-dot {{item.read ? 'read' : 'unread'}}"></view></view>
       <view class="message-block {{item.read ? 'read' : 'unread'}}" data-id="{{item._id}}" bindtap="toggle">
-        <view class="message-meta"><text class="type type-{{item.type}}">{{item.typeLabel}}</text><text>{{item.expanded ? '收起' : '展开'}}</text></view>
+        <view class="message-meta"><text class="type type-{{item.type}}">{{item.typeLabel}}</text><view class="expand-control {{item.expanded ? 'expanded' : ''}}"><text>{{item.expanded ? '收起' : '展开'}}</text><app-icon name="arrow-right" size="22" /></view></view>
         <text class="message-title">{{item.title}}</text>
         <text class="message-content {{item.expanded ? 'expanded' : ''}}">{{item.content}}</text>
         <text wx:if="{{item.kind === 'ANNOUNCEMENT' && item.validityText}}" class="validity">有效期：{{item.validityText}}</text>

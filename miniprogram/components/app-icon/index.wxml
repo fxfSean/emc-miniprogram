@@ -1,0 +1,7 @@
+<text
+  class="app-icon icon-{{name}}"
+  style="font-size: {{size}}rpx; color: {{color}};"
+  aria-role="img"
+  aria-label="{{label}}"
+  aria-hidden="{{!label}}"
+></text>

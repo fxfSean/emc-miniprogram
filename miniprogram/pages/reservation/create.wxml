@@ -4,16 +4,16 @@
     <view class="device-copy">
       <text class="eyebrow">设备预约</text>
       <text class="device-name">{{device.name}}</text>
-      <text class="device-meta">编号 {{device.deviceNo}}<text wx:if="{{device.location}}"> · {{device.location}}</text></text>
+      <view class="device-meta"><text>编号 {{device.deviceNo}}</text><view wx:if="{{device.location}}" class="device-location"><app-icon name="location" size="21" /><text>{{device.location}}</text></view></view>
     </view>
     <text class="device-status">{{device.statusText}}</text>
   </view>
 
   <view class="calendar-panel">
     <view class="calendar-head">
-      <view class="month-button" data-delta="-1" bindtap="changeMonth" aria-label="上一个月">‹</view>
+      <view class="month-button previous" data-delta="-1" bindtap="changeMonth" aria-label="上一个月"><app-icon name="arrow-right" size="34" /></view>
       <view class="month-copy"><text class="section-kicker">选择日期</text><text class="month-title">{{calendarTitle}}</text></view>
-      <view class="month-button" data-delta="1" bindtap="changeMonth" aria-label="下一个月">›</view>
+      <view class="month-button" data-delta="1" bindtap="changeMonth" aria-label="下一个月"><app-icon name="arrow-right" size="34" /></view>
     </view>
     <view class="week-row"><text class="week-name" wx:for="{{weekdays}}" wx:key="*this">{{item}}</text></view>
     <view class="calendar-grid">
@@ -26,7 +26,7 @@
 
   <view class="schedule-panel">
     <view class="schedule-head">
-      <view><text class="section-kicker">当日时段</text><text class="schedule-date">{{selectedDateLabel}} · 30 分钟/格</text></view>
+      <view><view class="kicker-with-icon"><app-icon name="time" size="22" /><text class="section-kicker">当日时段</text></view><text class="schedule-date">{{selectedDateLabel}} · 30 分钟/格</text></view>
       <text class="selection-chip {{hasSelection ? 'active' : ''}}">{{selectionText}}</text>
     </view>
     <view class="legend">

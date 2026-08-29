@@ -1,5 +1,5 @@
 <view class="page status-page" wx:if="{{user}}">
-  <view class="status-icon {{statusClass}}">{{statusIcon}}</view>
+  <view class="status-icon {{statusClass}}"><app-icon name="{{statusIcon}}" size="48" /></view>
   <view class="status-title">{{statusTitle}}</view>
   <view class="muted status-copy">{{statusCopy}}</view>
   <view class="card info"><view class="row between"><text>姓名</text><text>{{user.name}}</text></view><view class="row between"><text>学号 / 工号</text><text>{{user.studentNo}}</text></view><view class="row between"><text>导师</text><text>{{user.advisor}}</text></view></view>

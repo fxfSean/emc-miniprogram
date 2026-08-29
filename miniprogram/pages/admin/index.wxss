@@ -2,7 +2,11 @@
 .metric { background: #fff; border: 1rpx solid #e3e7e5; border-radius: 10rpx; padding: 24rpx 10rpx; text-align: center; }
 .metric text:first-child { display: block; font-size: 40rpx; font-weight: 700; margin-bottom: 8rpx; }
 .metric .muted { font-size: 23rpx; }
-.menu { display: flex; justify-content: space-between; font-size: 31rpx; }
+.section-with-icon { display: flex; align-items: center; gap: 9rpx; }
+.menu { display: flex; align-items: center; gap: 18rpx; font-size: 31rpx; }
+.menu-copy { flex: 1; min-width: 0; }
+.menu-icon { display: flex; align-items: center; justify-content: center; flex: none; width: 66rpx; height: 66rpx; color: #176b5b; background: #e8f2ef; border-radius: 9rpx; }
+.menu-icon.amber { color: #925d10; background: #f7efe1; }
 .menu-title { display: block; }
 .menu-desc { display: block; margin-top: 8rpx; color: #77817d; font-size: 23rpx; }
 .primary-menu { border-left: 7rpx solid #176b5b; }

@@ -6,13 +6,16 @@ page { background: #eef1ef; font-family: "PingFang SC", sans-serif; }
 .eyebrow, .section-kicker { display: block; color: #68746f; font-size: 22rpx; font-weight: 600; letter-spacing: 2rpx; }
 .device-banner .eyebrow { color: #9ed3c2; }
 .device-name { display: block; margin-top: 6rpx; overflow: hidden; font-size: 36rpx; font-weight: 700; text-overflow: ellipsis; white-space: nowrap; }
-.device-meta { display: block; margin-top: 8rpx; color: #c4d7d1; font-size: 24rpx; }
+.device-meta { display: flex; align-items: center; gap: 12rpx; margin-top: 8rpx; color: #c4d7d1; font-size: 24rpx; }
+.device-location { display: flex; align-items: center; gap: 4rpx; }
 .device-status { flex: none; margin-left: 18rpx; padding: 7rpx 14rpx; border: 1rpx solid rgba(255,255,255,.3); border-radius: 999rpx; color: #d8ebe5; font-size: 22rpx; }
 .calendar-panel, .schedule-panel, .reason-panel { margin-bottom: 20rpx; padding: 24rpx; background: #fff; border: 1rpx solid #dce2df; border-radius: 14rpx; box-shadow: 0 5rpx 18rpx rgba(29, 49, 42, .05); }
 .calendar-head, .schedule-head, .reason-head, .submit-row { display: flex; align-items: center; justify-content: space-between; }
 .month-copy { text-align: left; }
 .month-title, .schedule-date { display: block; margin-top: 5rpx; font-size: 30rpx; font-weight: 700; }
 .month-button { display: flex; align-items: center; justify-content: center; width: 64rpx; height: 64rpx; background: #edf5f2; border: 1rpx solid #cdded8; border-radius: 8rpx; color: #176b5b; font-family: Georgia, serif; font-size: 48rpx; line-height: 58rpx; }
+.month-button.previous app-icon { transform: rotate(180deg); }
+.kicker-with-icon { display: flex; align-items: center; gap: 6rpx; color: #176b5b; }
 .week-row, .calendar-grid { display: flex; flex-wrap: wrap; }
 .week-row { margin-top: 24rpx; border-bottom: 1rpx solid #edf0ef; }
 .week-name { width: 14.285%; padding-bottom: 12rpx; box-sizing: border-box; color: #89918e; font-size: 22rpx; text-align: center; }
