@@ -3,7 +3,7 @@
     "pages/home/index", "pages/device/detail", "pages/reservation/create",
     "pages/mine/index", "pages/notifications/index", "pages/profile/register", "pages/profile/edit", "pages/profile/status",
     "pages/admin/index", "pages/admin/users", "pages/admin/devices",
-    "pages/admin/reservations", "pages/admin/reservation-create",
+    "pages/admin/reservation-center", "pages/admin/reservations", "pages/admin/reservation-create",
     "pages/admin/device-blocks", "pages/admin/reservation-rules",
     "pages/admin/announcements", "pages/admin/notification-settings"
   ],

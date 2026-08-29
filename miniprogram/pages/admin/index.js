@@ -4,6 +4,6 @@ Page({
   async onShow() { this.setData({ summary: await call('admin', 'summary') }) },
   users() { wx.navigateTo({ url: '/pages/admin/users' }) },
   devices() { wx.navigateTo({ url: '/pages/admin/devices' }) },
-  reservations() { wx.navigateTo({ url: '/pages/admin/reservations' }) },
+  reservations() { wx.navigateTo({ url: '/pages/admin/reservation-center' }) },
   notifications() { wx.navigateTo({ url: '/pages/admin/announcements' }) }
 })

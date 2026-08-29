@@ -3,11 +3,7 @@
 .kicker,.sheet-kicker { display: block; color: #9ed3c2; font-size: 20rpx; font-weight: 700; letter-spacing: 3rpx; }
 .title { display: block; margin-top: 8rpx; font-size: 42rpx; font-weight: 700; }
 .subtitle { display: block; margin-top: 10rpx; color: #c4d7d1; font-size: 23rpx; }
-.quick-actions { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12rpx; margin-bottom: 20rpx; }
-.quick-actions .create { grid-column: 1 / -1; }
-.quick-actions button { height: 72rpx; margin: 0; padding: 0 12rpx; line-height: 72rpx; border-radius: 9rpx; font-size: 24rpx; }
-.quick { color: #176b5b; background: #e8f2ef; }
-.quick::after,.more::after,.cancel-button::after { border: 0; }
+.more::after,.cancel-button::after { border: 0; }
 .toolbar { display: flex; align-items: center; justify-content: space-between; gap: 18rpx; margin-bottom: 18rpx; }
 .segments { display: flex; padding: 5rpx; background: #e8ecea; border-radius: 9rpx; }
 .segment { padding: 12rpx 24rpx; color: #687078; font-size: 24rpx; }
