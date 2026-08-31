@@ -57,4 +57,35 @@
       <button class="confirm-button" loading="{{submitting}}" disabled="{{submitting || !hasSelection}}" bindtap="submit">确认预约</button>
     </view>
   </view>
+
+  <view wx:if="{{successVisible}}" class="success-mask" catchtap="noop" catchtouchmove="noop">
+    <view class="success-sheet" catchtap="noop">
+      <view class="success-icon"><app-icon name="check-circle" size="54" /></view>
+      <text class="success-title">预约成功</text>
+      <text class="success-copy">预约已保存，不开启微信提醒也不会影响本次预约。</text>
+
+      <view class="success-summary">
+        <text class="success-device">{{successSummary.deviceName}}</text>
+        <text class="success-time">{{successSummary.dateText}} · {{successSummary.timeText}}</text>
+      </view>
+
+      <view wx:if="{{reminderAvailable}}" class="reminder-note">
+        <app-icon name="notification" size="31" color="#176b5b" />
+        <text>开启后，可接收本次预约开始前的微信提醒。本授权仅用于一次提醒。</text>
+      </view>
+      <view wx:elif="{{!subscriptionTemplatesReady}}" class="reminder-note muted-note">
+        <app-icon name="notification" size="31" color="#68746f" />
+        <text>正在加载微信提醒配置，请稍候。</text>
+      </view>
+      <view wx:else class="reminder-note muted-note">
+        <app-icon name="notification" size="31" color="#68746f" />
+        <text>微信提醒模板暂不可用，本次预约仍会正常保留。</text>
+      </view>
+
+      <view class="success-actions">
+        <button wx:if="{{reminderAvailable}}" class="reminder-button" loading="{{reminderRequesting}}" disabled="{{reminderRequesting}}" bindtap="enableReminder">开启本次提醒</button>
+        <button class="skip-button" disabled="{{reminderRequesting}}" bindtap="skipReminder">{{reminderAvailable ? '暂不开启，查看我的预约' : '查看我的预约'}}</button>
+      </view>
+    </view>
+  </view>
 </view>

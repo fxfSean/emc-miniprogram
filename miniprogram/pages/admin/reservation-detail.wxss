@@ -1,0 +1,45 @@
+.detail-page { min-height: 100vh; padding: 24rpx 24rpx calc(52rpx + env(safe-area-inset-bottom)); box-sizing: border-box; }
+.state-block { padding: 160rpx 24rpx; color: #77817d; text-align: center; }
+.state-block text { display: block; }
+.retry-button { width: 220rpx; margin-top: 28rpx; color: #176b5b; background: #e8f2ef; font-size: 25rpx; }
+.retry-button::after { border: 0; }
+.detail-hero { margin: -24rpx -24rpx 20rpx; padding: 38rpx 30rpx 34rpx; color: #fff; background: #163d35; }
+.kicker,.section-kicker,.dialog-kicker { display: block; color: #9ed3c2; font-size: 19rpx; font-weight: 700; letter-spacing: 3rpx; }
+.hero-main { display: flex; align-items: flex-end; justify-content: space-between; gap: 24rpx; margin-top: 24rpx; }
+.hero-date { display: block; color: #d8e7e2; font-family: Georgia, serif; font-size: 25rpx; }
+.hero-time { display: block; margin-top: 5rpx; font-family: Georgia, serif; font-size: 42rpx; font-weight: 700; letter-spacing: 1rpx; }
+.status { flex: none; margin-bottom: 5rpx; padding: 8rpx 13rpx; color: #176b5b; background: #d9eee7; border-radius: 6rpx; font-size: 21rpx; }
+.status.CANCELLED,.status.ENDED { color: #5d6763; background: #edf0ef; }
+.status.IN_USE { color: #85540d; background: #fff0cb; }
+.section { margin-top: 18rpx; padding: 28rpx 28rpx 8rpx; background: #fff; border: 1rpx solid #e3e7e5; border-left: 6rpx solid #176b5b; border-radius: 10rpx; }
+.section-kicker { color: #6fae9c; }
+.section-title { display: block; margin: 6rpx 0 22rpx; font-size: 32rpx; font-weight: 700; }
+.info-row { display: grid; grid-template-columns: 128rpx minmax(0, 1fr); align-items: start; gap: 22rpx; padding: 22rpx 0; border-top: 1rpx solid #e8ecea; }
+.label { padding-top: 3rpx; color: #89918e; font-size: 22rpx; line-height: 1.45; }
+.value { min-width: 0; font-size: 27rpx; line-height: 1.45; text-align: left; word-break: break-all; }
+.emphasis { color: #176b5b; font-family: Georgia, serif; font-weight: 700; }
+.usage-section { border-left-color: #6fae9c; }
+.exception-section { border-left-color: #b64a43; }
+.exception-section .section-kicker { color: #b64a43; }
+.action-bar { display: flex; flex-direction: column; gap: 16rpx; margin-top: 24rpx; }
+.action-button { width: 100%; min-width: 0; height: 84rpx; margin: 0; padding: 0 24rpx; box-sizing: border-box; border-radius: 9rpx; font-size: 27rpx; font-weight: 600; line-height: 84rpx; }
+.action-button::after { border: 0; }
+.action-button.primary { color: #fff; background: #176b5b; }
+.action-button.secondary { color: #245f8e; background: #e7f0f7; }
+.action-button.danger { color: #b64a43; background: #fff; border: 1rpx solid #e8c4c1; }
+.dialog-mask { position: fixed; inset: 0; z-index: 20; display: flex; align-items: center; padding: 40rpx; box-sizing: border-box; background: rgba(15,25,21,.62); }
+.dialog { width: 100%; padding: 30rpx; box-sizing: border-box; background: #fff; border-radius: 14rpx; box-shadow: 0 20rpx 60rpx rgba(15,25,21,.22); }
+.dialog-kicker { color: #176b5b; }
+.danger-text { color: #b64a43; }
+.dialog-title { display: block; margin-top: 8rpx; color: #1d2925; font-size: 34rpx; font-weight: 700; }
+.dialog-copy { display: block; margin-top: 12rpx; color: #687078; font-size: 23rpx; line-height: 1.55; }
+.dialog-field { position: relative; margin-top: 24rpx; padding: 18rpx 18rpx 44rpx; box-sizing: border-box; background: #f7f8fa; border: 1rpx solid #d9dfdc; border-radius: 9rpx; }
+.dialog-reason { width: 100%; height: 176rpx; min-height: 176rpx; padding: 0; box-sizing: border-box; color: #1d2925; background: transparent; font-size: 27rpx; line-height: 1.55; }
+.dialog-count { position: absolute; right: 16rpx; bottom: 12rpx; color: #89918e; font-size: 19rpx; }
+.dialog-actions { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr); gap: 12rpx; margin-top: 24rpx; }
+.dialog-actions button { display: flex; align-items: center; justify-content: center; width: 100%; min-width: 0; height: 76rpx; margin: 0; padding: 0; box-sizing: border-box; border-radius: 8rpx; font-size: 25rpx; line-height: 1; }
+.dialog-actions button::after { border: 0; }
+.dialog-back { color: #44514d; background: #eef0ef; }
+.dialog-confirm { color: #fff; background: #176b5b; }
+.danger-confirm { background: #b64a43; }
+.dialog-actions button[disabled] { opacity: .58; }

@@ -9,10 +9,7 @@ Page({
     view: 'CALENDAR', views: [{ key: 'CALENDAR', label: '日历' }, { key: 'LIST', label: '列表' }],
     devices: [], deviceNames: ['全部设备'], deviceIndex: 0, deviceId: '',
     monthTitle: '', weekdays: ['日', '一', '二', '三', '四', '五', '六'], calendarDays: [], counts: {},
-    selectedDate: today(), items: [], total: 0, page: 1, hasMore: false, loading: false, summary: { checkedInCount: 0, completedCount: 0, actualDurationText: '0 分钟' },
-    detail: null, detailVisible: false,
-    cancelVisible: false, cancelReason: '', cancelReasonCount: 0, cancelling: false,
-    overrideVisible: false, overrideType: '', overrideReason: '', overrideReasonCount: 0, overriding: false
+    selectedDate: today(), items: [], total: 0, page: 1, hasMore: false, loading: false, summary: { checkedInCount: 0, completedCount: 0, actualDurationText: '0 分钟' }
   },
   async onLoad() {
     const now = new Date(); this.year = now.getFullYear(); this.month = now.getMonth() + 1
@@ -73,67 +70,9 @@ Page({
     } finally { this.listLoading = false }
   },
   loadMore() { if (this.data.hasMore) this.loadList(false) },
-  noop() {},
-  async openDetail(e) { const detail = await call('admin', 'reservationDetail', { id: e.currentTarget.dataset.id }); this.setData({ detail, detailVisible: true }) },
-  closeDetail() {
-    if (this.data.cancelling) return
-    this.setData({ detailVisible: false, detail: null, cancelVisible: false, cancelReason: '', cancelReasonCount: 0, overrideVisible: false, overrideType: '', overrideReason: '', overrideReasonCount: 0 })
-  },
-  cancel() {
-    const detail = this.data.detail
-    if (!detail || !detail.canCancel) return
-    this.setData({ cancelVisible: true, cancelReason: '', cancelReasonCount: 0 })
-  },
-  cancelReasonInput(e) {
-    const cancelReason = e.detail.value
-    this.setData({ cancelReason, cancelReasonCount: cancelReason.length })
-  },
-  closeCancel() {
-    if (this.data.cancelling) return
-    this.setData({ cancelVisible: false, cancelReason: '', cancelReasonCount: 0 })
-  },
-  async confirmCancel() {
-    const { detail, cancelReason, cancelling } = this.data
-    if (!detail || cancelling) return
-    const reason = String(cancelReason || '').trim()
-    if (!reason) return wx.showToast({ title: '请填写取消原因', icon: 'none' })
-    this.setData({ cancelling: true })
-    try {
-      await call('reservation', 'adminCancel', { id: detail._id, reason })
-      wx.showToast({ title: '预约已取消' })
-      this.setData({ detailVisible: false, detail: null, cancelVisible: false, cancelReason: '', cancelReasonCount: 0 })
-      await this.refresh()
-    } finally {
-      this.setData({ cancelling: false })
-    }
-  },
-  openOverride(e) {
-    const overrideType = e.currentTarget.dataset.type
-    if (!['CHECK_IN', 'CHECK_OUT'].includes(overrideType)) return
-    this.setData({ overrideVisible: true, overrideType, overrideReason: '', overrideReasonCount: 0 })
-  },
-  overrideReasonInput(e) {
-    const overrideReason = e.detail.value
-    this.setData({ overrideReason, overrideReasonCount: overrideReason.length })
-  },
-  closeOverride() {
-    if (this.data.overriding) return
-    this.setData({ overrideVisible: false, overrideType: '', overrideReason: '', overrideReasonCount: 0 })
-  },
-  async confirmOverride() {
-    const { detail, overrideType, overrideReason, overriding } = this.data
-    if (!detail || overriding) return
-    const reason = String(overrideReason || '').trim()
-    if (!reason) return wx.showToast({ title: '请填写操作原因', icon: 'none' })
-    const action = overrideType === 'CHECK_IN' ? 'adminCheckIn' : 'adminCheckOut'
-    this.setData({ overriding: true })
-    try {
-      await call('reservation', action, { id: detail._id, reason })
-      wx.showToast({ title: overrideType === 'CHECK_IN' ? '代签到成功' : '代签退成功' })
-      this.setData({ overrideVisible: false, overrideType: '', overrideReason: '', overrideReasonCount: 0, detailVisible: false, detail: null })
-      await this.refresh()
-    } finally {
-      this.setData({ overriding: false })
-    }
+  openDetail(e) {
+    const id = e.currentTarget.dataset.id
+    if (!id) return
+    wx.navigateTo({ url: `/pages/admin/reservation-detail?id=${encodeURIComponent(id)}` })
   }
 })

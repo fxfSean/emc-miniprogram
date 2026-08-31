@@ -1,9 +1,9 @@
 .overview-page { min-height: 100vh; padding: 24rpx 24rpx 60rpx; box-sizing: border-box; }
 .hero { margin: -24rpx -24rpx 22rpx; padding: 34rpx 28rpx 30rpx; color: #fff; background: #163d35; }
-.kicker,.sheet-kicker { display: block; color: #9ed3c2; font-size: 20rpx; font-weight: 700; letter-spacing: 3rpx; }
+.kicker { display: block; color: #9ed3c2; font-size: 20rpx; font-weight: 700; letter-spacing: 3rpx; }
 .title { display: block; margin-top: 8rpx; font-size: 42rpx; font-weight: 700; }
 .subtitle { display: block; margin-top: 10rpx; color: #c4d7d1; font-size: 23rpx; }
-.more::after,.cancel-button::after { border: 0; }
+.more::after { border: 0; }
 .toolbar { display: flex; align-items: center; justify-content: space-between; gap: 18rpx; margin-bottom: 18rpx; }
 .segments { display: flex; padding: 5rpx; background: #e8ecea; border-radius: 9rpx; }
 .segment { padding: 12rpx 24rpx; color: #687078; font-size: 24rpx; }
@@ -46,35 +46,3 @@
 .owner,.reason { display: block; margin-top: 8rpx; color: #687078; font-size: 22rpx; }
 .reason { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .more { color: #176b5b; background: transparent; font-size: 24rpx; }
-.mask { position: fixed; inset: 0; z-index: 10; display: flex; align-items: flex-end; background: rgba(15,25,21,.48); }
-.sheet { width: 100%; max-height: 82vh; padding: 30rpx; padding-bottom: calc(30rpx + env(safe-area-inset-bottom)); box-sizing: border-box; overflow-y: auto; background: #fff; border-radius: 18rpx 18rpx 0 0; }
-.sheet-head { display: flex; align-items: flex-start; justify-content: space-between; }
-.sheet-title { display: block; margin-top: 7rpx; font-size: 34rpx; font-weight: 700; }
-.close { color: #687078; }
-.detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 22rpx; margin-top: 28rpx; }
-.detail-grid view { padding-bottom: 16rpx; border-bottom: 1rpx solid #e3e7e5; }
-.detail-grid text:first-child { display: block; color: #89918e; font-size: 21rpx; }
-.detail-grid text:last-child { display: block; margin-top: 7rpx; line-height: 1.5; }
-.detail-grid .full { grid-column: 1 / -1; }
-.detail-actions { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 12rpx; margin-top: 30rpx; }
-.detail-actions button { min-width: 168rpx; height: 70rpx; margin: 0; padding: 0 18rpx; border-radius: 8rpx; font-size: 23rpx; line-height: 70rpx; }
-.detail-actions button::after { border: 0; }
-.override-button { color: #176b5b; background: #e8f2ef; }
-.check-out-admin { color: #2563a6; background: #e6f0fa; }
-.cancel-button { color: #b64a43; background: transparent; }
-.cancel-mask { position: fixed; inset: 0; z-index: 20; display: flex; align-items: center; padding: 40rpx; box-sizing: border-box; background: rgba(15,25,21,.62); }
-.cancel-dialog { width: 100%; padding: 30rpx; box-sizing: border-box; background: #fff; border-radius: 14rpx; box-shadow: 0 20rpx 60rpx rgba(15,25,21,.22); }
-.cancel-kicker { display: block; color: #b64a43; font-size: 19rpx; font-weight: 700; letter-spacing: 2rpx; }
-.cancel-title { display: block; margin-top: 8rpx; color: #1d2925; font-size: 34rpx; font-weight: 700; }
-.cancel-copy { display: block; margin-top: 12rpx; color: #687078; font-size: 23rpx; line-height: 1.55; }
-.cancel-field { position: relative; margin-top: 24rpx; padding: 18rpx 18rpx 44rpx; box-sizing: border-box; background: #f7f8fa; border: 1rpx solid #d9dfdc; border-radius: 9rpx; }
-.cancel-reason { width: 100%; height: 176rpx; min-height: 176rpx; padding: 0; box-sizing: border-box; color: #1d2925; background: transparent; font-size: 27rpx; line-height: 1.55; }
-.cancel-count { position: absolute; right: 16rpx; bottom: 12rpx; color: #89918e; font-size: 19rpx; }
-.cancel-actions { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr); gap: 12rpx; margin-top: 24rpx; }
-.cancel-actions button { display: flex; align-items: center; justify-content: center; width: 100%; min-width: 0; height: 76rpx; margin: 0; padding: 0; box-sizing: border-box; border-radius: 8rpx; font-size: 25rpx; line-height: 1; }
-.cancel-actions button::after { border: 0; }
-.cancel-back { color: #44514d; background: #eef0ef; }
-.cancel-confirm { color: #fff; background: #b64a43; }
-.override-kicker { display: block; color: #176b5b; font-size: 19rpx; font-weight: 700; letter-spacing: 2rpx; }
-.override-confirm { color: #fff; background: #176b5b; }
-.cancel-actions button[disabled] { opacity: .58; }

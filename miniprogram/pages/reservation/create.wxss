@@ -66,3 +66,21 @@ page { background: #eef1ef; font-family: "PingFang SC", sans-serif; }
 .confirm-button { flex: none; width: 218rpx; margin: 0; border-radius: 8rpx; background: #176b5b; color: #fff; font-size: 27rpx; line-height: 78rpx; }
 .confirm-button::after { border: 0; }
 .confirm-button[disabled] { background: #aeb8b4; color: #eef1ef; }
+.success-mask { position: fixed; inset: 0; z-index: 30; display: flex; align-items: flex-end; padding: 24rpx; padding-bottom: calc(24rpx + env(safe-area-inset-bottom)); box-sizing: border-box; background: rgba(15,25,21,.58); }
+.success-sheet { width: 100%; padding: 34rpx 30rpx 24rpx; box-sizing: border-box; background: #fff; border-radius: 20rpx 20rpx 12rpx 12rpx; }
+.success-icon { display: flex; align-items: center; justify-content: center; width: 82rpx; height: 82rpx; color: #176b5b; background: #e8f2ef; border-radius: 50%; }
+.success-title { display: block; margin-top: 22rpx; color: #1d2925; font-size: 38rpx; font-weight: 700; }
+.success-copy { display: block; margin-top: 10rpx; color: #68746f; font-size: 24rpx; line-height: 1.55; }
+.success-summary { margin-top: 26rpx; padding: 22rpx 0; border-top: 1rpx solid #e7ebe9; border-bottom: 1rpx solid #e7ebe9; }
+.success-device { display: block; overflow: hidden; color: #1d2925; font-size: 29rpx; font-weight: 700; text-overflow: ellipsis; white-space: nowrap; }
+.success-time { display: block; margin-top: 8rpx; color: #68746f; font-family: Georgia, serif; font-size: 24rpx; }
+.reminder-note { display: flex; align-items: flex-start; gap: 14rpx; margin-top: 24rpx; padding: 20rpx; color: #40504a; background: #f2f7f5; border-left: 6rpx solid #176b5b; border-radius: 4rpx 9rpx 9rpx 4rpx; }
+.reminder-note app-icon { flex: none; margin-top: 2rpx; }
+.reminder-note text { font-size: 23rpx; line-height: 1.55; }
+.muted-note { color: #68746f; background: #f3f5f4; border-left-color: #9ba5a1; }
+.success-actions { display: flex; flex-direction: column; gap: 10rpx; margin-top: 26rpx; }
+.success-actions button { width: 100%; height: 82rpx; margin: 0; padding: 0 20rpx; border-radius: 8rpx; font-size: 26rpx; line-height: 82rpx; }
+.success-actions button::after { border: 0; }
+.reminder-button { color: #fff; background: #176b5b; font-weight: 600; }
+.skip-button { color: #68746f; background: transparent; }
+.success-actions button[disabled] { opacity: .58; }

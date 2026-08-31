@@ -1,0 +1,70 @@
+<view class="detail-page">
+  <view wx:if="{{loading && !detail}}" class="state-block">正在加载预约详情…</view>
+  <view wx:elif="{{loadFailed && !detail}}" class="state-block">
+    <text>预约详情加载失败</text>
+    <button class="retry-button" bindtap="retry">重新加载</button>
+  </view>
+
+  <block wx:if="{{detail}}">
+    <view class="detail-hero">
+      <text class="kicker">RESERVATION DETAIL</text>
+      <view class="hero-main">
+        <view>
+          <text class="hero-date">{{detail.date}}</text>
+          <text class="hero-time">{{detail.timeText}}</text>
+        </view>
+        <text class="status {{detail.category}}">{{detail.statusText}}</text>
+      </view>
+    </view>
+
+    <view class="section">
+      <text class="section-kicker">BOOKING</text>
+      <text class="section-title">预约信息</text>
+      <view class="info-row"><text class="label">预约人</text><text class="value">{{detail.userName}} · {{detail.studentNo || '学号未录入'}}</text></view>
+      <view class="info-row"><text class="label">设备</text><text class="value">{{detail.deviceName}} · {{detail.deviceNo || '编号未录入'}}</text></view>
+      <view class="info-row wide"><text class="label">预约事由</text><text class="value multiline">{{detail.reason || '未填写'}}</text></view>
+    </view>
+
+    <view wx:if="{{detail.checkedInAtText || detail.checkedOutAtText || detail.actualDurationText || detail.checkInSourceText || detail.checkInDistanceMeters !== null}}" class="section usage-section">
+      <text class="section-kicker">ACTUAL USAGE</text>
+      <text class="section-title">实际使用</text>
+      <view wx:if="{{detail.checkedInAtText}}" class="info-row"><text class="label">签到时间</text><text class="value">{{detail.checkedInAtText}}</text></view>
+      <view wx:if="{{detail.checkedOutAtText}}" class="info-row"><text class="label">签退时间</text><text class="value">{{detail.checkedOutAtText}}</text></view>
+      <view wx:if="{{detail.actualDurationText}}" class="info-row"><text class="label">实际时长</text><text class="value emphasis">{{detail.actualDurationText}}</text></view>
+      <view wx:if="{{detail.checkInSourceText}}" class="info-row"><text class="label">签到方式</text><text class="value">{{detail.checkInSourceText}}</text></view>
+      <view wx:if="{{detail.checkInDistanceMeters !== null}}" class="info-row wide"><text class="label">签到位置</text><text class="value multiline">{{detail.checkInSiteName || '实验室'}} · 距设置点 {{detail.checkInDistanceMeters}} 米</text></view>
+    </view>
+
+    <view wx:if="{{detail.cancelReason}}" class="section exception-section">
+      <text class="section-kicker">CANCELLATION</text>
+      <text class="section-title">取消记录</text>
+      <view class="info-row wide"><text class="label">取消原因</text><text class="value multiline">{{detail.cancelReason}}</text></view>
+    </view>
+
+    <view wx:if="{{detail.canAdminCheckIn || detail.canAdminCheckOut || detail.canCancel}}" class="action-bar">
+      <button wx:if="{{detail.canAdminCheckIn}}" class="action-button primary" data-type="CHECK_IN" bindtap="openOverride">代用户签到</button>
+      <button wx:if="{{detail.canAdminCheckOut}}" class="action-button secondary" data-type="CHECK_OUT" bindtap="openOverride">代用户签退</button>
+      <button wx:if="{{detail.canCancel}}" class="action-button danger" bindtap="cancel">取消该预约</button>
+    </view>
+  </block>
+
+  <view wx:if="{{cancelVisible}}" class="dialog-mask" bindtap="closeCancel">
+    <view class="dialog" catchtap="noop">
+      <text class="dialog-kicker danger-text">CANCEL RESERVATION</text>
+      <text class="dialog-title">取消该预约？</text>
+      <text class="dialog-copy">取消后，{{detail.date}} {{detail.timeText}} 将重新开放给其他成员。</text>
+      <view class="dialog-field"><textarea class="dialog-reason" value="{{cancelReason}}" maxlength="200" cursor-spacing="24" bindinput="cancelReasonInput" placeholder="填写取消原因，例如：设备临时故障"></textarea><text class="dialog-count">{{cancelReasonCount}} / 200</text></view>
+      <view class="dialog-actions"><button class="dialog-back" disabled="{{cancelling}}" bindtap="closeCancel">返回</button><button class="dialog-confirm danger-confirm" loading="{{cancelling}}" disabled="{{cancelling}}" bindtap="confirmCancel">确认取消</button></view>
+    </view>
+  </view>
+
+  <view wx:if="{{overrideVisible}}" class="dialog-mask" bindtap="closeOverride">
+    <view class="dialog" catchtap="noop">
+      <text class="dialog-kicker">ADMIN OVERRIDE</text>
+      <text class="dialog-title">{{overrideType === 'CHECK_IN' ? '代用户签到？' : '代用户签退？'}}</text>
+      <text class="dialog-copy">{{overrideType === 'CHECK_IN' ? '仅用于用户定位失败等现场特殊情况。' : '签退后将按服务器时间计算实际使用时长。'}}</text>
+      <view class="dialog-field"><textarea class="dialog-reason" value="{{overrideReason}}" maxlength="200" cursor-spacing="24" bindinput="overrideReasonInput" placeholder="填写操作原因"></textarea><text class="dialog-count">{{overrideReasonCount}} / 200</text></view>
+      <view class="dialog-actions"><button class="dialog-back" disabled="{{overriding}}" bindtap="closeOverride">返回</button><button class="dialog-confirm" loading="{{overriding}}" disabled="{{overriding}}" bindtap="confirmOverride">确认操作</button></view>
+    </view>
+  </view>
+</view>

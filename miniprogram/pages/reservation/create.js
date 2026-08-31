@@ -1,5 +1,5 @@
 const { call } = require('../../utils/cloud')
-const { loadNotificationTemplateIds, requestNotificationTemplates, saveSubscriptionResults } = require('../../utils/notifications')
+const { loadNotificationTemplateIds, requestNotificationTemplates, saveSubscriptionResults, subscriptionOutcomeMessage } = require('../../utils/notifications')
 
 const pad = n => String(n).padStart(2, '0')
 const formatDate = date => `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`
@@ -29,7 +29,12 @@ Page({
     maxAdvanceDays: 7,
     ruleTexts: ['每人每天最多预约 4 小时', '每人最多同时持有 3 个有效预约', '可预约未来 7 天内的时段（以当前时间为准）'],
     loading: true,
-    submitting: false
+    submitting: false,
+    subscriptionTemplatesReady: false,
+    reminderAvailable: false,
+    reminderRequesting: false,
+    successVisible: false,
+    successSummary: { deviceName: '', dateText: '', timeText: '' }
   },
 
   onLoad(query) {
@@ -47,8 +52,13 @@ Page({
   async onShow() { await this.load() },
 
   async prepareSubscriptionTemplates() {
-    try { this.subscriptionTemplateIds = await loadNotificationTemplateIds(['reservationCreated', 'reservationCancelled', 'reminder']) }
-    catch (error) { this.subscriptionTemplateIds = [] }
+    try {
+      this.subscriptionTemplateIds = await loadNotificationTemplateIds(['reminder'])
+      this.setData({ subscriptionTemplatesReady: true, reminderAvailable: this.subscriptionTemplateIds.length > 0 })
+    } catch (error) {
+      this.subscriptionTemplateIds = []
+      this.setData({ subscriptionTemplatesReady: true, reminderAvailable: false })
+    }
   },
 
   buildCalendar() {
@@ -198,11 +208,39 @@ Page({
     if (!reason.trim()) return wx.showToast({ title: '请填写实验内容', icon: 'none' })
     this.setData({ submitting: true })
     try {
-      const subscriptionOutcome = await requestNotificationTemplates(this.subscriptionTemplateIds)
-      await saveSubscriptionResults(subscriptionOutcome.results)
       await call('reservation', 'create', { deviceId: this.deviceId, date, startTime, endTime, reason: reason.trim() })
-      wx.showToast({ title: '预约成功' })
-      setTimeout(() => wx.switchTab({ url: '/pages/mine/index' }), 600)
+      this.setData({
+        successVisible: true,
+        successSummary: {
+          deviceName: this.data.device ? this.data.device.name : '预约设备',
+          dateText: this.data.selectedDateLabel,
+          timeText: `${startTime}–${endTime}`
+        }
+      })
     } finally { this.setData({ submitting: false }) }
+  },
+
+  noop() {},
+
+  skipReminder() {
+    if (this.data.reminderRequesting) return
+    this.setData({ successVisible: false })
+    wx.switchTab({ url: '/pages/mine/index' })
+  },
+
+  async enableReminder() {
+    if (this.data.reminderRequesting) return
+    if (!this.data.subscriptionTemplatesReady) return wx.showToast({ title: '提醒配置正在加载', icon: 'none' })
+    if (!this.data.reminderAvailable) return wx.showToast({ title: '提醒模板暂不可用', icon: 'none' })
+    this.setData({ reminderRequesting: true })
+    try {
+      const outcome = await requestNotificationTemplates(this.subscriptionTemplateIds)
+      await saveSubscriptionResults(outcome.results)
+      this.setData({ successVisible: false })
+      wx.showToast({ title: subscriptionOutcomeMessage(outcome), icon: outcome.status === 'ACCEPTED' ? 'success' : 'none' })
+      wx.switchTab({ url: '/pages/mine/index' })
+    } finally {
+      this.setData({ reminderRequesting: false })
+    }
   }
 })
