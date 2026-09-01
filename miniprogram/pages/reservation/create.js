@@ -225,7 +225,7 @@ Page({
   skipReminder() {
     if (this.data.reminderRequesting) return
     this.setData({ successVisible: false })
-    wx.switchTab({ url: '/pages/mine/index' })
+    wx.redirectTo({ url: '/pages/reservation/mine' })
   },
 
   async enableReminder() {
@@ -238,7 +238,7 @@ Page({
       await saveSubscriptionResults(outcome.results)
       this.setData({ successVisible: false })
       wx.showToast({ title: subscriptionOutcomeMessage(outcome), icon: outcome.status === 'ACCEPTED' ? 'success' : 'none' })
-      wx.switchTab({ url: '/pages/mine/index' })
+      wx.redirectTo({ url: '/pages/reservation/mine' })
     } finally {
       this.setData({ reminderRequesting: false })
     }

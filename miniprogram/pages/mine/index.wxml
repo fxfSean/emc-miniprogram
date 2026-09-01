@@ -1,35 +1,52 @@
-<view class="page">
-  <view class="profile row between">
-    <view class="profile-main"><text class="name">{{user.name}}</text><text class="muted identity">{{user.studentNo}} · {{user.advisor}}</text></view>
-    <view class="profile-actions">
-      <button class="button secondary small icon-button" bindtap="editProfile"><app-icon name="edit" size="24" /><text>编辑资料</text></button>
-      <button wx:if="{{user.role === 'ADMIN'}}" class="button secondary small icon-button" bindtap="admin"><app-icon name="settings" size="24" /><text>管理</text></button>
+<view class="mine-page">
+  <view class="identity-panel">
+    <view class="identity-decoration"></view>
+    <text class="identity-kicker">MEMBER PROFILE</text>
+    <view class="identity-main">
+      <view class="profile-badge">{{profileInitial}}</view>
+      <view class="identity-copy">
+        <text class="profile-name">{{user.name}}</text>
+        <text class="profile-meta">{{user.studentNo}} · {{user.advisor}}</text>
+      </view>
     </view>
+    <text class="role-tag">{{roleLabel}}</text>
   </view>
-  <view class="notification-entry" bindtap="messages">
-    <view class="notification-mark"><app-icon name="notification" size="36" label="消息通知" /></view>
-    <view class="notification-main"><text class="notification-title">消息通知</text><text class="notification-copy">{{notification.latestTitle}}</text></view>
-    <view class="notification-side"><text wx:if="{{notification.unreadCount}}" class="unread-count">{{notification.unreadCount > 99 ? '99+' : notification.unreadCount}}</text><app-icon name="arrow-right" size="34" color="#89918e" /></view>
+
+  <view class="section-kicker">常用功能</view>
+  <view class="reservation-entry" hover-class="entry-hover-dark" bindtap="reservations">
+    <view class="reservation-icon"><app-icon name="calendar-check" size="42" label="我的预约" /></view>
+    <view class="entry-copy">
+      <text class="reservation-title">我的预约</text>
+      <text class="reservation-description">查看待使用、使用中及历史预约</text>
+    </view>
+    <view class="entry-action"><text>查看</text><app-icon name="arrow-right" size="30" /></view>
   </view>
-  <view class="about-entry" hover-class="entry-hover" bindtap="about">
-    <view class="about-mark"><app-icon name="information" size="34" label="关于软件" /></view>
-    <view class="about-main"><text class="about-title">关于软件</text><text class="about-copy">隐私保护指引与版本信息</text></view>
-    <app-icon name="arrow-right" size="34" color="#89918e" />
-  </view>
-  <view class="tabs">
-    <view wx:for="{{tabs}}" wx:key="value" class="tab {{tab === item.value ? 'active' : ''}}" data-tab="{{item.value}}" data-label="{{item.label}}" bindtap="tab">{{item.label}}</view>
-  </view>
-  <view wx:if="{{!reservations.length}}" class="empty">暂无{{activeTabLabel}}预约</view>
-  <view class="card booking" wx:for="{{reservations}}" wx:key="_id">
-    <view class="row between"><text class="device-name">{{item.deviceName}}</text><text class="tag status-{{item.category}}">{{item.statusText}}</text></view>
-    <view class="time booking-time"><app-icon name="calendar" size="24" /><text>{{item.date}}　{{item.startTime}}–{{item.endTime}}</text></view>
-    <text class="muted reason">{{item.reason}}</text>
-    <view wx:if="{{item.checkedInAtText}}" class="usage"><view><text>签到时间</text><text>{{item.checkedInAtText}}</text></view><view wx:if="{{item.checkedOutAtText}}"><text>签退时间</text><text>{{item.checkedOutAtText}}</text></view><view wx:if="{{item.actualDurationText}}"><text>实际使用</text><text class="duration">{{item.actualDurationText}}</text></view></view>
-    <text wx:if="{{item.checkInHint}}" class="check-hint">{{item.checkInHint}}</text>
-    <view class="booking-actions">
-      <button wx:if="{{item.canCancel}}" class="button danger small" data-id="{{item._id}}" disabled="{{!!actingId}}" catchtap="cancel">取消预约</button>
-      <button wx:if="{{item.canCheckIn}}" class="button small check-in" data-id="{{item._id}}" loading="{{actingId === item._id && actingAction === 'CHECK_IN'}}" disabled="{{!!actingId}}" catchtap="checkIn">签到</button>
-      <button wx:if="{{item.canCheckOut}}" class="button small check-out" data-id="{{item._id}}" loading="{{actingId === item._id && actingAction === 'CHECK_OUT'}}" disabled="{{!!actingId}}" catchtap="checkOut">签退</button>
+
+  <view class="section-kicker service-label">服务与设置</view>
+  <view class="menu-group">
+    <view class="menu-row" hover-class="entry-hover" bindtap="messages">
+      <view class="menu-icon"><app-icon name="notification" size="31" label="消息通知" /></view>
+      <view class="menu-copy">
+        <text class="menu-title">消息通知</text>
+        <text class="menu-description">{{notification.latestTitle}}</text>
+      </view>
+      <text wx:if="{{notification.unreadCount}}" class="unread-count">{{notification.unreadCount > 99 ? '99+' : notification.unreadCount}}</text>
+      <app-icon name="arrow-right" size="32" color="#89918e" />
+    </view>
+    <view class="menu-row" hover-class="entry-hover" bindtap="editProfile">
+      <view class="menu-icon"><app-icon name="edit" size="31" label="编辑资料" /></view>
+      <view class="menu-copy"><text class="menu-title">个人资料</text><text class="menu-description">更新身份与联系方式</text></view>
+      <app-icon name="arrow-right" size="32" color="#89918e" />
+    </view>
+    <view wx:if="{{user.role === 'ADMIN'}}" class="menu-row" hover-class="entry-hover" bindtap="admin">
+      <view class="menu-icon admin-icon"><app-icon name="settings" size="31" label="管理中心" /></view>
+      <view class="menu-copy"><text class="menu-title">管理中心</text><text class="menu-description">用户、设备与预约管理</text></view>
+      <app-icon name="arrow-right" size="32" color="#89918e" />
+    </view>
+    <view class="menu-row" hover-class="entry-hover" bindtap="about">
+      <view class="menu-icon"><app-icon name="information" size="31" label="关于软件" /></view>
+      <view class="menu-copy"><text class="menu-title">关于软件</text><text class="menu-description">隐私保护指引与版本信息</text></view>
+      <app-icon name="arrow-right" size="32" color="#89918e" />
     </view>
   </view>
 </view>

@@ -72,7 +72,7 @@ Page({
     const item = this.data.items.find(row => row._id === e.currentTarget.dataset.id)
     if (!item || !item.navigation) return
     const page = item.navigation.page, params = item.navigation.params || {}
-    if (page === 'MINE_RESERVATION') return wx.switchTab({ url: '/pages/mine/index' })
+    if (page === 'MINE_RESERVATION') return wx.navigateTo({ url: '/pages/reservation/mine' })
     if (page === 'PROFILE_STATUS') return wx.navigateTo({ url: '/pages/profile/status' })
     if (page === 'DEVICE_DETAIL' && params.id) return wx.navigateTo({ url: `/pages/device/detail?id=${encodeURIComponent(params.id)}` })
   }

@@ -1,0 +1,30 @@
+<view class="page reservation-page">
+  <view class="reservation-header">
+    <text class="header-kicker">RESERVATION RECORDS</text>
+    <text class="header-title">预约记录</text>
+    <text class="header-copy">查看预约状态并完成签到、签退等操作</text>
+  </view>
+
+  <view class="tabs">
+    <view wx:for="{{tabs}}" wx:key="value" class="tab {{tab === item.value ? 'active' : ''}}" data-tab="{{item.value}}" data-label="{{item.label}}" bindtap="tab">{{item.label}}</view>
+  </view>
+
+  <view wx:if="{{!reservations.length}}" class="empty-state">
+    <view class="empty-icon"><app-icon name="calendar" size="44" label="暂无预约" /></view>
+    <text class="empty-title">暂无{{activeTabLabel}}预约</text>
+    <text class="empty-copy">设备预约状态会在这里持续更新</text>
+  </view>
+
+  <view class="card booking" wx:for="{{reservations}}" wx:key="_id">
+    <view class="row between"><text class="device-name">{{item.deviceName}}</text><text class="tag status-{{item.category}}">{{item.statusText}}</text></view>
+    <view class="time booking-time"><app-icon name="calendar" size="24" /><text>{{item.date}}　{{item.startTime}}–{{item.endTime}}</text></view>
+    <text class="muted reason">{{item.reason}}</text>
+    <view wx:if="{{item.checkedInAtText}}" class="usage"><view><text>签到时间</text><text>{{item.checkedInAtText}}</text></view><view wx:if="{{item.checkedOutAtText}}"><text>签退时间</text><text>{{item.checkedOutAtText}}</text></view><view wx:if="{{item.actualDurationText}}"><text>实际使用</text><text class="duration">{{item.actualDurationText}}</text></view></view>
+    <text wx:if="{{item.checkInHint}}" class="check-hint">{{item.checkInHint}}</text>
+    <view class="booking-actions">
+      <button wx:if="{{item.canCancel}}" class="button danger small" data-id="{{item._id}}" disabled="{{!!actingId}}" catchtap="cancel">取消预约</button>
+      <button wx:if="{{item.canCheckIn}}" class="button small check-in" data-id="{{item._id}}" loading="{{actingId === item._id && actingAction === 'CHECK_IN'}}" disabled="{{!!actingId}}" catchtap="checkIn">签到</button>
+      <button wx:if="{{item.canCheckOut}}" class="button small check-out" data-id="{{item._id}}" loading="{{actingId === item._id && actingAction === 'CHECK_OUT'}}" disabled="{{!!actingId}}" catchtap="checkOut">签退</button>
+    </view>
+  </view>
+</view>
