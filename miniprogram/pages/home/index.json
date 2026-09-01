@@ -1,1 +1,6 @@
-{ "navigationBarTitleText": "实验室设备", "enablePullDownRefresh": true }
+{
+  "navigationBarTitleText": "实验室设备",
+  "enablePullDownRefresh": true,
+  "enableShareAppMessage": true,
+  "enableShareTimeline": true
+}

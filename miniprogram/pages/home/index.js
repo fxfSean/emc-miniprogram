@@ -11,5 +11,11 @@ Page({
     finally { this.setData({ loading: false }) }
   },
   search() { this.loadDevices() },
-  open(e) { wx.navigateTo({ url: `/pages/device/detail?id=${e.currentTarget.dataset.id}` }) }
+  open(e) { wx.navigateTo({ url: `/pages/device/detail?id=${e.currentTarget.dataset.id}` }) },
+  onShareAppMessage() {
+    return { title: 'EMC 智造实验室设备预约', path: '/pages/home/index' }
+  },
+  onShareTimeline() {
+    return { title: 'EMC 智造实验室设备预约' }
+  }
 })

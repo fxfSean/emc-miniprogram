@@ -1,1 +1,5 @@
-{ "navigationBarTitleText": "设备详情" }
+{
+  "navigationBarTitleText": "设备详情",
+  "enableShareAppMessage": true,
+  "enableShareTimeline": true
+}
