@@ -1,0 +1,30 @@
+page { background: #f4f6f5; }
+.about-page { min-height: 100vh; padding: 30rpx 28rpx calc(48rpx + env(safe-area-inset-bottom)); box-sizing: border-box; }
+.brand-panel { position: relative; display: flex; align-items: flex-end; min-height: 220rpx; overflow: hidden; padding: 34rpx 30rpx; box-sizing: border-box; color: #fff; background: #154f45; border-radius: 14rpx; }
+.brand-panel::after { position: absolute; right: -48rpx; top: -70rpx; width: 230rpx; height: 230rpx; border: 32rpx solid rgba(255, 255, 255, .08); border-radius: 50%; content: ""; }
+.brand-code { position: relative; z-index: 1; flex: none; margin-right: 26rpx; padding-right: 24rpx; color: #9dd8ca; border-right: 1rpx solid rgba(255, 255, 255, .24); font: 700 42rpx/1 Georgia, serif; letter-spacing: 2rpx; }
+.brand-copy { position: relative; z-index: 1; min-width: 0; }
+.eyebrow,.app-name,.app-description { display: block; }
+.eyebrow { color: #9dd8ca; font: 700 18rpx/1.2 Georgia, serif; letter-spacing: 3rpx; }
+.app-name { margin-top: 13rpx; font-size: 35rpx; font-weight: 700; }
+.app-description { margin-top: 9rpx; color: rgba(255, 255, 255, .72); font-size: 21rpx; }
+.section-label { margin: 34rpx 4rpx 14rpx; color: #68736f; font-size: 21rpx; font-weight: 700; letter-spacing: 2rpx; }
+.info-group { overflow: hidden; background: #fff; border: 1rpx solid #dfe5e2; border-radius: 12rpx; }
+.info-row { display: flex; align-items: center; min-height: 112rpx; padding: 0 24rpx; box-sizing: border-box; }
+.row-icon { display: flex; align-items: center; justify-content: center; flex: none; width: 62rpx; height: 62rpx; margin-right: 18rpx; color: #176b5b; background: #e8f2ef; border-radius: 8rpx; }
+.row-content { flex: 1; min-width: 0; }
+.row-title,.row-description { display: block; }
+.row-title { color: #1d2925; font-size: 27rpx; font-weight: 700; }
+.row-description { margin-top: 7rpx; color: #77817d; font-size: 21rpx; }
+.row-hover { background: #f1f5f3; }
+.privacy-note { display: block; margin: 14rpx 6rpx 0; color: #89918e; font-size: 20rpx; line-height: 1.55; }
+.version-label { margin-top: 40rpx; }
+.version-group { padding: 0 24rpx; }
+.version-row { display: flex; align-items: center; justify-content: space-between; min-height: 92rpx; border-bottom: 1rpx solid #edf0ef; }
+.version-row:last-child { border-bottom: 0; }
+.version-name { color: #44514d; font-size: 25rpx; }
+.version-value { color: #176b5b; font: 700 26rpx/1 Georgia, serif; }
+.environment-tag { padding: 7rpx 14rpx; color: #176b5b; background: #e8f2ef; border-radius: 7rpx; font-size: 21rpx; }
+.page-footer { margin-top: 72rpx; color: #89918e; font-size: 20rpx; line-height: 1.8; text-align: center; }
+.page-footer text { display: block; }
+.copyright { margin-top: 5rpx; font-family: Georgia, serif; letter-spacing: 1rpx; }

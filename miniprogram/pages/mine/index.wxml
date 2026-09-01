@@ -11,6 +11,11 @@
     <view class="notification-main"><text class="notification-title">消息通知</text><text class="notification-copy">{{notification.latestTitle}}</text></view>
     <view class="notification-side"><text wx:if="{{notification.unreadCount}}" class="unread-count">{{notification.unreadCount > 99 ? '99+' : notification.unreadCount}}</text><app-icon name="arrow-right" size="34" color="#89918e" /></view>
   </view>
+  <view class="about-entry" hover-class="entry-hover" bindtap="about">
+    <view class="about-mark"><app-icon name="information" size="34" label="关于软件" /></view>
+    <view class="about-main"><text class="about-title">关于软件</text><text class="about-copy">隐私保护指引与版本信息</text></view>
+    <app-icon name="arrow-right" size="34" color="#89918e" />
+  </view>
   <view class="tabs">
     <view wx:for="{{tabs}}" wx:key="value" class="tab {{tab === item.value ? 'active' : ''}}" data-tab="{{item.value}}" data-label="{{item.label}}" bindtap="tab">{{item.label}}</view>
   </view>

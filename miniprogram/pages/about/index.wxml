@@ -1,0 +1,40 @@
+<view class="about-page">
+  <view class="brand-panel">
+    <view class="brand-code">EMC</view>
+    <view class="brand-copy">
+      <text class="eyebrow">LABORATORY SERVICE</text>
+      <text class="app-name">EMC 智造实验室</text>
+      <text class="app-description">实验室设备预约与使用管理工具</text>
+    </view>
+  </view>
+
+  <view class="section-label">隐私与服务</view>
+  <view class="info-group">
+    <view class="info-row privacy-row" hover-class="row-hover" bindtap="openPrivacyContract">
+      <view class="row-icon"><app-icon name="user-shield" size="32" label="隐私保护指引" /></view>
+      <view class="row-content">
+        <text class="row-title">隐私保护指引</text>
+        <text class="row-description">查看个人信息收集与使用说明</text>
+      </view>
+      <app-icon name="arrow-right" size="32" color="#89918e" />
+    </view>
+  </view>
+  <text class="privacy-note">隐私保护指引由微信提供展示，内容以小程序后台已发布版本为准。</text>
+
+  <view class="section-label version-label">版本信息</view>
+  <view class="info-group version-group">
+    <view class="version-row">
+      <text class="version-name">当前版本</text>
+      <text class="version-value">V{{version}}</text>
+    </view>
+    <view class="version-row">
+      <text class="version-name">运行环境</text>
+      <text class="environment-tag">{{environment}}</text>
+    </view>
+  </view>
+
+  <view class="page-footer">
+    <text>为实验室设备高效、有序使用提供支持</text>
+    <text class="copyright">EMC LAB · V{{version}}</text>
+  </view>
+</view>

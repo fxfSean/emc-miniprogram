@@ -85,5 +85,6 @@ Page({
   },
   editProfile() { wx.navigateTo({ url: '/pages/profile/edit' }) },
   messages() { wx.navigateTo({ url: '/pages/notifications/index' }) },
+  about() { wx.navigateTo({ url: '/pages/about/index' }) },
   admin() { wx.navigateTo({ url: '/pages/admin/index' }) }
 })
