@@ -208,7 +208,7 @@ exports.main = async event => {
           id: `review_${user._id}_${reviewVersion}`, userId: user._id, type: 'REVIEW_RESULT', title: resultText,
           content: approved ? '您的实验室成员资料已通过审核，可以预约设备。' : `未通过原因：${note}`,
           businessType: 'USER', businessId: user._id, navigation: { page: 'PROFILE_STATUS', params: {} },
-          templateKey: 'review', templatePayload: { result: resultText, time: formatDateTime(Date.now()), note: approved ? '可以开始预约设备' : note.slice(0, 20) }
+          templateKey: 'review', templatePayload: { result: resultText, approver: me.name || '实验室管理员', time: formatDateTime(Date.now()), note: approved ? '可以开始预约设备' : note.slice(0, 20) }
         })
       })
       return ok(true)

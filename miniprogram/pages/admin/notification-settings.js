@@ -1,12 +1,12 @@
 const { call } = require('../../utils/cloud')
 
 const DEFINITIONS = [
-  { key: 'review', label: '注册审核结果', sample: '{"result":"phrase1","time":"time2","note":"thing3"}' },
+  { key: 'review', label: '注册审核结果', sample: '{"result":"phrase20","approver":"thing16","time":"time17","note":"thing10"}' },
   { key: 'reservationCreated', label: '预约成功', sample: '{"device":"thing1","time":"time2","note":"thing3"}' },
   { key: 'reservationCancelled', label: '预约取消', sample: '{"device":"thing1","time":"time2","reason":"thing3"}' },
-  { key: 'reminder', label: '预约开始提醒', sample: '{"device":"thing1","time":"time2","note":"thing3"}' },
-  { key: 'maintenance', label: '设备维护', sample: '{"device":"thing1","time":"time2","reason":"thing3"}' },
-  { key: 'announcement', label: '系统公告', sample: '{"title":"thing1","time":"time2","content":"thing3"}' }
+  { key: 'reminder', label: '预约开始提醒', sample: '{"device":"thing1","time":"time4","note":"thing3"}' },
+  { key: 'maintenance', label: '设备维护', sample: '{"device":"thing1","time":"time5","reason":"thing4"}' },
+  { key: 'announcement', label: '系统公告', sample: '{"title":"thing1","time":"time3","content":"thing2"}' }
 ]
 
 Page({

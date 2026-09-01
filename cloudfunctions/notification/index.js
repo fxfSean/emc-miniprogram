@@ -9,7 +9,7 @@ const fail = message => ({ ok: false, message })
 const TYPES = ['REVIEW_RESULT', 'RESERVATION_CREATED', 'RESERVATION_CANCELLED', 'RESERVATION_REMINDER', 'DEVICE_MAINTENANCE']
 const TEMPLATE_KEYS = ['review', 'reservationCreated', 'reservationCancelled', 'reminder', 'maintenance', 'announcement']
 const TEMPLATE_SEMANTICS = {
-  review: ['result', 'time', 'note'],
+  review: ['result', 'approver', 'time', 'note'],
   reservationCreated: ['device', 'time', 'note'],
   reservationCancelled: ['device', 'time', 'reason'],
   reminder: ['device', 'time', 'note'],
