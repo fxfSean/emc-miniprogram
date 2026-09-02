@@ -13,7 +13,9 @@ exports.main = async event => {
       if (!(event.includeDisabled && user.role === 'ADMIN')) query = query.where({ status: _.neq('DISABLED') })
       let data = (await query.orderBy('deviceNo', 'asc').limit(100).get()).data
       const keyword = String(event.keyword || '').trim().toLowerCase()
-      if (keyword) data = data.filter(x => [x.name, x.deviceNo, x.model].some(v => String(v || '').toLowerCase().includes(keyword)))
+      const keywords = Array.isArray(event.keywords) ? event.keywords.map(value => String(value || '').trim().toLowerCase()).filter(Boolean).slice(0, 10) : []
+      const searchTerms = keywords.length ? keywords : (keyword ? [keyword] : [])
+      if (searchTerms.length) data = data.filter(x => searchTerms.some(term => [x.name, x.deviceNo, x.model, x.location].some(v => String(v || '').toLowerCase().includes(term))))
       return ok(data.map(x => ({ ...x, statusText: labels[x.status] || x.status })))
     }
     if (event.action === 'detail') {

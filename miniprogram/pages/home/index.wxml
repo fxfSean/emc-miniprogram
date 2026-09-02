@@ -3,13 +3,15 @@
     <view class="hero-heading"><app-icon name="device" size="42" color="#176b5b" /><text class="hero-title">设备预约</text></view>
     <text class="hero-sub">选择设备并查看可用时段</text>
   </view>
+  <view wx:if="{{searchPanelVisible}}" class="search-mask" catchtap="hideSearchPanel"></view>
   <view class="search-shell">
     <view class="search row">
       <view class="search-input-wrap">
-        <input value="{{keyword}}" bindfocus="onFocus" bindblur="onBlur" bindinput="onInput" bindconfirm="search" confirm-type="search" placeholder="搜索设备名称、编号或型号" />
+        <view class="search-prefix"><app-icon name="search" size="28" color="#77817d" /></view>
+        <input value="{{keyword}}" bindfocus="onFocus" bindblur="onBlur" bindinput="onInput" bindconfirm="search" confirm-type="search" placeholder="搜索名称、编号、型号或地点" />
         <view wx:if="{{keyword}}" class="search-clear" catchtap="clearSearch"><app-icon name="close-circle" size="30" color="#89918e" label="清空搜索关键词" /></view>
       </view>
-      <button class="button small search-button" bindtap="search"><app-icon name="search" size="27" /><text>搜索</text></button>
+      <button class="search-button" bindtap="search"><app-icon name="search" size="25" /><text>搜索</text></button>
     </view>
     <view wx:if="{{searchPanelVisible}}" class="search-panel" catchtap="noop">
       <block wx:if="{{keyword}}">
@@ -27,6 +29,22 @@
           <view class="history-content"><app-icon name="time" size="24" color="#77817d" /><text>{{item}}</text></view>
           <view class="history-delete" data-keyword="{{item}}" catchtap="deleteHistory"><app-icon name="close-circle" size="28" color="#89918e" label="删除搜索记录" /></view>
         </view>
+        <block wx:if="{{quickLocations.length}}">
+          <text class="search-panel-title quick-title">实验室地点</text>
+          <view class="quick-locations">
+            <view class="quick-location" wx:for="{{quickLocations}}" wx:key="*this" data-keyword="{{item}}" bindtap="selectQuickLocation">
+              <app-icon name="location" size="22" color="#176b5b" /><text>{{item}}</text>
+            </view>
+          </view>
+        </block>
+        <block wx:if="{{quickFeatures.length}}">
+          <text class="search-panel-title quick-title">设备特征</text>
+          <view class="quick-features">
+            <view class="quick-feature" wx:for="{{quickFeatures}}" wx:key="id" data-id="{{item.id}}" bindtap="selectQuickFeature">
+              <text>{{item.label}}</text><text class="quick-count">{{item.count}}</text>
+            </view>
+          </view>
+        </block>
       </block>
     </view>
   </view>
