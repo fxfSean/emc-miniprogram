@@ -38,7 +38,7 @@
           </view>
         </block>
         <block wx:if="{{quickFeatures.length}}">
-          <text class="search-panel-title quick-title">设备特征</text>
+          <text class="search-panel-title quick-title">设备类型</text>
           <view class="quick-features">
             <view class="quick-feature" wx:for="{{quickFeatures}}" wx:key="id" data-id="{{item.id}}" bindtap="selectQuickFeature">
               <text>{{item.label}}</text><text class="quick-count">{{item.count}}</text>
