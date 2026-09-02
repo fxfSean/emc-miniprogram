@@ -1,7 +1,7 @@
 const { call } = require('./utils/cloud')
 
 App({
-  globalData: { user: null, envId: 'emc-lab-dev-d6gtpq5dh51b806c3', appVersion: '2.1.0' }, // 开发
+  globalData: { user: null, envId: 'emc-lab-dev-d6gtpq5dh51b806c3', appVersion: '2.2.0' }, // 开发
   // globalData: { user: null, envId: 'emc-lab-dev-d4g8yb8vs1adca97a' }, // 线上
   onLaunch() {
     if (!wx.cloud) {

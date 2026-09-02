@@ -2,9 +2,26 @@
 .hero-heading { display: flex; align-items: center; gap: 14rpx; }
 .hero-title { display: block; font-size: 46rpx; font-weight: 700; }
 .hero-sub, .meta { display: block; color: #77817d; margin-top: 9rpx; }
-.search { gap: 16rpx; margin-bottom: 26rpx; }
-.search input { flex: 1; height: 76rpx; background: #fff; border: 1rpx solid #dce1df; border-radius: 10rpx; padding: 0 20rpx; }
+.search-shell { position: relative; z-index: 20; margin-bottom: 26rpx; }
+.search { gap: 16rpx; }
+.search-input-wrap { position: relative; flex: 1; min-width: 0; }
+.search input { width: 100%; height: 76rpx; box-sizing: border-box; background: #fff; border: 1rpx solid #dce1df; border-radius: 10rpx; padding: 0 76rpx 0 20rpx; }
+.search-clear { position: absolute; top: 0; right: 8rpx; display: flex; align-items: center; justify-content: center; width: 60rpx; height: 76rpx; }
 .search-button { display: flex; align-items: center; justify-content: center; gap: 8rpx; }
+.search-panel { position: absolute; top: 88rpx; left: 0; right: 0; overflow: hidden; background: #fff; border: 1rpx solid #dce1df; border-radius: 10rpx; box-shadow: 0 12rpx 30rpx rgba(29, 41, 37, .12); }
+.search-panel-title { display: block; padding: 20rpx 22rpx 12rpx; color: #89918e; font-size: 22rpx; }
+.search-panel-empty { padding: 24rpx 22rpx 30rpx; color: #89918e; font-size: 25rpx; text-align: center; }
+.suggestion-item,.history-item { min-height: 80rpx; padding: 12rpx 22rpx; border-top: 1rpx solid #edf0ef; box-sizing: border-box; }
+.suggestion-item { display: flex; align-items: center; gap: 16rpx; }
+.suggestion-item > view { flex: 1; min-width: 0; }
+.suggestion-name,.suggestion-meta { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.suggestion-name { color: #26332e; font-size: 27rpx; }
+.suggestion-meta { margin-top: 4rpx; color: #89918e; font-size: 21rpx; }
+.history-item { display: flex; align-items: center; justify-content: space-between; gap: 18rpx; }
+.history-content { display: flex; align-items: center; flex: 1; min-width: 0; gap: 14rpx; }
+.history-content text { overflow: hidden; color: #4e5955; font-size: 26rpx; text-overflow: ellipsis; white-space: nowrap; }
+.history-delete { display: flex; align-items: center; justify-content: center; flex: none; width: 56rpx; height: 56rpx; }
+.suggestion-item:active,.history-item:active { background: #f1f6f4; }
 .device-name { font-size: 31rpx; font-weight: 650; }
 .device { transition: background .15s; }
 .device:active { background: #f1f6f4; }
