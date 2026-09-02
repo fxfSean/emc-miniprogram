@@ -109,6 +109,10 @@ Page({
     this.setData({ searchHistory: history, searchPanelVisible: true })
   },
   noop() {},
+  quickReserve(e) {
+    const deviceId = e.currentTarget.dataset.id
+    if (deviceId) wx.navigateTo({ url: `/pages/reservation/create?deviceId=${deviceId}` })
+  },
   open(e) { wx.navigateTo({ url: `/pages/device/detail?id=${e.currentTarget.dataset.id}` }) },
   onShareAppMessage() {
     return { title: 'EMC 智造实验室设备预约', path: '/pages/home/index' }

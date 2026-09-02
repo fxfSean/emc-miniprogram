@@ -10,17 +10,25 @@
   </view>
 
   <view class="calendar-panel">
-    <view class="calendar-head">
-      <view class="month-button previous" data-delta="-1" bindtap="changeMonth" aria-label="上一个月"><app-icon name="arrow-right" size="34" /></view>
-      <view class="month-copy"><text class="section-kicker">选择日期</text><text class="month-title">{{calendarTitle}}</text></view>
-      <view class="month-button" data-delta="1" bindtap="changeMonth" aria-label="下一个月"><app-icon name="arrow-right" size="34" /></view>
+    <view class="date-strip-head">
+      <text class="section-kicker">选择日期</text>
+      <text class="date-range-tip">可预约未来 {{maxAdvanceDays}} 天</text>
     </view>
-    <view class="week-row"><text class="week-name" wx:for="{{weekdays}}" wx:key="*this">{{item}}</text></view>
-    <view class="calendar-grid">
-      <view wx:for="{{calendarDays}}" wx:key="key" class="calendar-day {{item.empty ? 'empty-day' : ''}} {{item.today ? 'today' : ''}} {{item.selected ? 'selected-day' : ''}} {{item.disabled ? 'disabled-day' : ''}}" data-value="{{item.value}}" data-disabled="{{item.disabled}}" bindtap="selectDate">
-        <text wx:if="{{!item.empty}}">{{item.day}}</text>
-        <view wx:if="{{item.today && !item.selected}}" class="today-dot"></view>
-      </view>
+    <view class="date-picker-row">
+      <scroll-view class="date-scroll" scroll-x show-scrollbar="{{false}}" scroll-into-view="{{dateScrollTarget}}">
+        <view class="date-list">
+          <view wx:for="{{dateOptions}}" wx:key="value" id="date-{{item.value}}" class="date-card {{item.selected ? 'selected-date' : ''}}" data-value="{{item.value}}" bindtap="selectDate">
+            <text class="date-weekday">{{item.weekday}}</text>
+            <text class="date-short">{{item.shortDate}}</text>
+          </view>
+        </view>
+      </scroll-view>
+      <picker class="all-date-picker" mode="date" value="{{date}}" start="{{dateOptions[0].value}}" end="{{datePickerEnd}}" bindchange="datePickerChange">
+        <view class="all-date-button" aria-label="选择全部日期">
+          <app-icon name="calendar" size="31" />
+          <text>全部日期</text>
+        </view>
+      </picker>
     </view>
   </view>
 

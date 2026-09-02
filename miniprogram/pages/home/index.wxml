@@ -1,6 +1,6 @@
 <view class="page">
   <view class="hero">
-    <view class="hero-heading"><app-icon name="device" size="42" color="#176b5b" /><text class="hero-title">设备预约</text></view>
+    <view class="hero-heading"><app-icon name="device" size="38" color="#176b5b" /><text class="hero-title">设备预约</text></view>
     <text class="hero-sub">选择设备并查看可用时段</text>
   </view>
   <view wx:if="{{searchPanelVisible}}" class="search-mask" catchtap="hideSearchPanel"></view>
@@ -8,7 +8,7 @@
     <view class="search row">
       <view class="search-input-wrap">
         <view class="search-prefix"><app-icon name="search" size="28" color="#77817d" /></view>
-        <input value="{{keyword}}" bindfocus="onFocus" bindblur="onBlur" bindinput="onInput" bindconfirm="search" confirm-type="search" placeholder="搜索名称、编号、型号或地点" />
+        <input value="{{keyword}}" bindfocus="onFocus" bindblur="onBlur" bindinput="onInput" bindconfirm="search" confirm-type="search" placeholder="搜索名称、编号、型号" />
         <view wx:if="{{keyword}}" class="search-clear" catchtap="clearSearch"><app-icon name="close-circle" size="30" color="#89918e" label="清空搜索关键词" /></view>
       </view>
       <button class="search-button" bindtap="search"><app-icon name="search" size="25" /><text>搜索</text></button>
@@ -50,8 +50,11 @@
   </view>
   <view wx:if="{{!loading && !devices.length}}" class="empty">暂无匹配设备</view>
   <view class="card device" wx:for="{{devices}}" wx:key="_id" data-id="{{item._id}}" bindtap="open">
-    <view class="row between"><text class="device-name">{{item.name}}</text><text class="tag {{item.status !== 'AVAILABLE' ? 'gray' : ''}}">{{item.statusText}}</text></view>
-    <text class="meta">{{item.deviceNo}} · {{item.model || '型号未录入'}}</text>
-    <view class="meta location"><app-icon name="location" size="24" /><text>{{item.location || '位置未录入'}}</text></view>
+    <view class="row between"><text class="device-name">{{item.name}}</text><text class="tag device-status {{item.status !== 'AVAILABLE' ? 'gray' : ''}}">{{item.statusText}}</text></view>
+    <text class="meta device-meta">编号 {{item.deviceNo}} · {{item.model || '型号未录入'}}</text>
+    <view class="device-footer">
+      <view class="meta location"><app-icon name="location" size="24" /><text>{{item.location || '位置未录入'}}</text></view>
+      <view wx:if="{{item.status === 'AVAILABLE'}}" class="quick-reserve" data-id="{{item._id}}" catchtap="quickReserve" aria-role="button" aria-label="预约{{item.name}}"><text>立即预约</text><app-icon name="arrow-right" size="21" color="#176b5b" /></view>
+    </view>
   </view>
 </view>

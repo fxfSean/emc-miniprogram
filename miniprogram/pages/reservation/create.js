@@ -17,9 +17,9 @@ Page({
     device: null,
     date: today(),
     selectedDateLabel: '',
-    calendarTitle: '',
-    calendarDays: [],
-    weekdays: ['日', '一', '二', '三', '四', '五', '六'],
+    dateOptions: [],
+    datePickerEnd: '',
+    dateScrollTarget: '',
     timeSlots: [],
     startTime: '',
     endTime: '',
@@ -39,13 +39,10 @@ Page({
 
   onLoad(query) {
     this.deviceId = query.deviceId
-    const now = new Date()
-    this.calendarYear = now.getFullYear()
-    this.calendarMonth = now.getMonth() + 1
     this.selectedStartIndex = -1
     this.selectedEndIndex = -1
     this.baseSlots = []
-    this.buildCalendar()
+    this.buildDateOptions()
     this.prepareSubscriptionTemplates()
   },
 
@@ -61,41 +58,43 @@ Page({
     }
   },
 
-  buildCalendar() {
+  buildDateOptions() {
     const { date, maxAdvanceDays } = this.data
-    const firstWeekday = new Date(this.calendarYear, this.calendarMonth - 1, 1).getDay()
-    const dayCount = new Date(this.calendarYear, this.calendarMonth, 0).getDate()
     const todayValue = today()
     const maxDate = addDays(todayValue, maxAdvanceDays)
-    const days = []
-    for (let i = 0; i < firstWeekday; i += 1) days.push({ key: `blank-start-${i}`, empty: true })
-    for (let day = 1; day <= dayCount; day += 1) {
-      const value = `${this.calendarYear}-${pad(this.calendarMonth)}-${pad(day)}`
-      const disabled = value < todayValue || value > maxDate
-      days.push({ key: value, day, value, empty: false, disabled, today: value === todayValue, selected: value === date })
-    }
-    while (days.length % 7) days.push({ key: `blank-end-${days.length}`, empty: true })
+    const weekdayNames = ['周日', '周一', '周二', '周三', '周四', '周五', '周六']
+    const dateOptions = Array.from({ length: maxAdvanceDays + 1 }, (_, index) => {
+      const value = addDays(todayValue, index)
+      const current = new Date(`${value}T12:00:00+08:00`)
+      return {
+        value,
+        weekday: index === 0 ? '今天' : weekdayNames[current.getDay()],
+        shortDate: `${pad(current.getMonth() + 1)}/${pad(current.getDate())}`,
+        selected: value === date
+      }
+    })
     const selected = new Date(`${date}T12:00:00+08:00`)
     this.setData({
-      calendarTitle: `${this.calendarYear} 年 ${this.calendarMonth} 月`,
-      calendarDays: days,
+      dateOptions,
+      datePickerEnd: maxDate,
+      dateScrollTarget: `date-${date}`,
       selectedDateLabel: `${selected.getMonth() + 1}月${selected.getDate()}日`
     })
   },
 
-  changeMonth(e) {
-    const delta = Number(e.currentTarget.dataset.delta)
-    const next = new Date(this.calendarYear, this.calendarMonth - 1 + delta, 1)
-    this.calendarYear = next.getFullYear()
-    this.calendarMonth = next.getMonth() + 1
-    this.buildCalendar()
+  async selectDate(e) {
+    const { value } = e.currentTarget.dataset
+    if (!value || value === this.data.date) return
+    this.setData({ date: value, dateScrollTarget: `date-${value}` })
+    this.buildDateOptions()
+    await this.loadAvailability()
   },
 
-  async selectDate(e) {
-    const { value, disabled } = e.currentTarget.dataset
-    if (!value || disabled) return
-    this.setData({ date: value })
-    this.buildCalendar()
+  async datePickerChange(e) {
+    const value = e.detail.value
+    if (!value || value === this.data.date) return
+    this.setData({ date: value, dateScrollTarget: `date-${value}` })
+    this.buildDateOptions()
     await this.loadAvailability()
   },
 
@@ -131,7 +130,7 @@ Page({
         ruleTexts: [`每人每天最多预约 ${dailyText}`, `每人最多同时持有 ${activeCount} 个有效预约`, `可预约未来 ${maxAdvanceDays} 天内的时段（以当前时间为准）`],
         startTime: '', endTime: '', hasSelection: false, selectionText: '请选择连续空闲时段', timeSlots: this.baseSlots
       })
-      this.buildCalendar()
+      this.buildDateOptions()
     } finally {
       if (requestId === this.availabilityRequestId) this.setData({ loading: false })
     }
