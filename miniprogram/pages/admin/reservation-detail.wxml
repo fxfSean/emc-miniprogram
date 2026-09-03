@@ -23,6 +23,7 @@
       <view class="info-row"><text class="label">预约人</text><text class="value">{{detail.userName}} · {{detail.studentNo || '学号未录入'}}</text></view>
       <view class="info-row"><text class="label">设备</text><text class="value">{{detail.deviceName}} · {{detail.deviceNo || '编号未录入'}}</text></view>
       <view class="info-row wide"><text class="label">预约事由</text><text class="value multiline">{{detail.reason || '未填写'}}</text></view>
+      <view class="info-row"><text class="label">提交时间</text><text class="value server-time">{{detail.createdAtText || '暂无记录'}}</text></view>
     </view>
 
     <view wx:if="{{detail.checkedInAtText || detail.checkedOutAtText || detail.actualDurationText || detail.checkInSourceText || detail.checkInDistanceMeters !== null}}" class="section usage-section">

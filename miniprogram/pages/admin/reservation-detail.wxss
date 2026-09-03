@@ -17,6 +17,7 @@
 .info-row { display: grid; grid-template-columns: 128rpx minmax(0, 1fr); align-items: start; gap: 22rpx; padding: 22rpx 0; border-top: 1rpx solid #e8ecea; }
 .label { padding-top: 3rpx; color: #89918e; font-size: 22rpx; line-height: 1.45; }
 .value { min-width: 0; font-size: 27rpx; line-height: 1.45; text-align: left; word-break: break-all; }
+.server-time { color: #44514d; font-family: Georgia, serif; font-size: 25rpx; }
 .emphasis { color: #176b5b; font-family: Georgia, serif; font-weight: 700; }
 .usage-section { border-left-color: #6fae9c; }
 .exception-section { border-left-color: #b64a43; }
