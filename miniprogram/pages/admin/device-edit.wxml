@@ -1,0 +1,46 @@
+<view class="form-page">
+  <view wx:if="{{loading}}" class="loading-copy">正在加载设备信息…</view>
+  <block wx:else>
+    <view class="form-card">
+      <text class="section-kicker">DEVICE PROFILE</text>
+      <text class="section-title">设备信息</text>
+      <view class="field"><text class="field-label">设备编号</text><input class="input" data-key="deviceNo" value="{{form.deviceNo}}" bindinput="input" placeholder="请输入设备编号"/></view>
+      <view class="field"><text class="field-label">设备名称</text><input class="input" data-key="name" value="{{form.name}}" bindinput="input" placeholder="请输入设备名称"/></view>
+      <view class="field"><text class="field-label">型号</text><input class="input" data-key="model" value="{{form.model}}" bindinput="input" placeholder="请输入设备型号"/></view>
+      <view class="field"><text class="field-label">厂家</text><input class="input" data-key="manufacturer" value="{{form.manufacturer}}" bindinput="input" placeholder="请输入设备厂家"/></view>
+      <view class="field last-field"><text class="field-label">具体位置</text><input class="input" data-key="location" value="{{form.location}}" bindinput="input" placeholder="例如：机械楼 302 室东侧"/></view>
+    </view>
+
+    <view class="location-section">
+      <view class="location-heading">
+        <view><text class="location-kicker">CHECK-IN GEOFENCE</text><text class="location-title">设备签到位置</text></view>
+        <text class="location-status {{siteConfigured ? 'ready' : ''}}">{{siteConfigured ? '已设置' : '未设置'}}</text>
+      </view>
+      <text class="location-copy">通过地图搜索或选择设备所在建筑，无需在设备现场采集定位。</text>
+      <view wx:if="{{siteConfigured}}" class="map-shell">
+        <map class="map-preview" latitude="{{mapLatitude}}" longitude="{{mapLongitude}}" scale="17" markers="{{mapMarkers}}" circles="{{mapCircles}}" enable-scroll="{{false}}" enable-zoom="{{false}}" show-location="{{false}}"></map>
+        <cover-view class="map-tap-layer" aria-role="button" aria-label="重新选择地图位置" catchtap="chooseLocation"></cover-view>
+      </view>
+      <view wx:if="{{siteConfigured}}" class="selected-location">
+        <view class="selected-icon"><app-icon name="location" size="30" label="地图位置" /></view>
+        <view class="selected-copy"><text class="selected-name">{{form.checkInSite.name}}</text><text class="selected-address">{{form.checkInSite.address || '地图未返回详细地址'}}</text></view>
+      </view>
+      <view wx:if="{{inheritedSite}}" class="migration-note">当前显示的是旧版全局签到位置，保存设备后将转为该设备的独立位置。</view>
+      <button wx:if="{{!siteConfigured}}" class="choose-location" loading="{{choosingLocation}}" disabled="{{choosingLocation}}" bindtap="chooseLocation"><app-icon name="location" size="27" /><text>在地图中选择位置</text></button>
+      <view class="radius-row">
+        <view><text class="radius-title">签到范围</text><text class="radius-copy">建议室外建筑设置 100–200 米</text></view>
+        <view class="radius-input"><input type="number" value="{{form.checkInSite.radiusMeters}}" bindinput="radiusInput"/><text>米</text></view>
+      </view>
+    </view>
+
+    <view class="form-card status-card">
+      <text class="field-label">设备状态</text>
+      <picker range="{{statusNames}}" value="{{statusIndex}}" bindchange="status"><view class="picker">{{statusNames[statusIndex]}}</view></picker>
+    </view>
+
+    <view class="form-actions">
+      <button class="button save-button" loading="{{processing === 'SAVE'}}" disabled="{{processing !== ''}}" bindtap="save">保存设备</button>
+      <view wx:if="{{form._id}}" class="delete-action-row"><button class="delete-button" loading="{{processing === 'DELETE'}}" disabled="{{processing !== ''}}" bindtap="deleteDevice">删除设备</button></view>
+    </view>
+  </block>
+</view>

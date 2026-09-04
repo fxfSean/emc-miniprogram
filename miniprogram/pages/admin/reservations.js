@@ -3,16 +3,16 @@ const pad = value => String(value).padStart(2, '0')
 const formatDate = date => `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`
 const today = () => formatDate(new Date())
 const dateRange = value => [Date.parse(`${value}T00:00:00+08:00`), Date.parse(`${value}T00:00:00+08:00`) + 86400000]
+const WEEK_TEXTS = ['周日', '周一', '周二', '周三', '周四', '周五', '周六']
 
 Page({
   data: {
     view: 'CALENDAR', views: [{ key: 'CALENDAR', label: '日历' }, { key: 'LIST', label: '列表' }],
     devices: [], deviceNames: ['全部设备'], deviceIndex: 0, deviceId: '',
-    monthTitle: '', weekdays: ['日', '一', '二', '三', '四', '五', '六'], calendarDays: [], counts: {},
+    weekDays: [],
     selectedDate: today(), items: [], total: 0, page: 1, hasMore: false, loading: false, summary: { checkedInCount: 0, completedCount: 0, actualDurationText: '0 分钟' }
   },
   async onLoad() {
-    const now = new Date(); this.year = now.getFullYear(); this.month = now.getMonth() + 1
     await this.loadDevices(); await this.refresh(); this.loaded = true
   },
   onShow() { if (this.loaded) this.refresh() },
@@ -27,47 +27,76 @@ Page({
     this.setData({ deviceIndex, deviceId: device ? device._id : '' }); await this.refresh()
   },
   async dateChange(e) {
-    const value = e.detail.value, date = new Date(`${value}T12:00:00+08:00`)
-    this.year = date.getFullYear(); this.month = date.getMonth() + 1
-    this.setData({ selectedDate: value }); await this.refresh()
+    const value = e.detail.value
+    this.setData({ selectedDate: value }); await this.loadList(true)
   },
-  async changeMonth(e) {
-    const next = new Date(this.year, this.month - 1 + Number(e.currentTarget.dataset.delta), 1)
-    this.year = next.getFullYear(); this.month = next.getMonth() + 1
-    this.setData({ selectedDate: `${this.year}-${pad(this.month)}-01` }); await this.refresh()
+  async onSelectDate(e) {
+    const value = e.currentTarget.dataset.date
+    if (!value || value === this.data.selectedDate) return
+    this.setData({ selectedDate: value }); await this.loadList(true)
   },
-  async selectDay(e) {
-    const value = e.currentTarget.dataset.value
-    if (!value) return
-    this.setData({ selectedDate: value }); this.buildCalendar(this.data.counts); await this.loadList(true)
+  getReservationsByDate(date, reservations) {
+    return reservations.filter(item => item.date === date)
   },
-  buildCalendar(counts) {
-    const first = new Date(this.year, this.month - 1, 1).getDay(), total = new Date(this.year, this.month, 0).getDate(), days = []
-    for (let index = 0; index < first; index += 1) days.push({ key: `s${index}`, empty: true })
-    for (let day = 1; day <= total; day += 1) {
-      const value = `${this.year}-${pad(this.month)}-${pad(day)}`
-      days.push({ key: value, value, day, count: counts[value] || 0, selected: value === this.data.selectedDate, today: value === today() })
+  getUniqueReservationUsers(reservations) {
+    return [...new Set(reservations.map(item => String(item.userName || '').trim()).filter(Boolean))]
+  },
+  generateNext7Days(reservations = [], base = new Date()) {
+    const start = new Date(base.getFullYear(), base.getMonth(), base.getDate())
+    return Array.from({ length: 7 }, (_, index) => {
+      const date = new Date(start.getFullYear(), start.getMonth(), start.getDate() + index)
+      const value = formatDate(date)
+      const dayReservations = this.getReservationsByDate(value, reservations)
+      const uniqueUsers = this.getUniqueReservationUsers(dayReservations)
+      return {
+        date: value,
+        dateText: `${date.getMonth() + 1}/${date.getDate()}`,
+        weekText: index === 0 ? '今天' : WEEK_TEXTS[date.getDay()],
+        userNames: uniqueUsers.slice(0, 2),
+        extraUserCount: Math.max(0, uniqueUsers.length - 2),
+        reservationCount: dayReservations.length,
+        isToday: index === 0
+      }
+    })
+  },
+  async loadWeekOverview() {
+    const base = new Date()
+    const emptyWeek = this.generateNext7Days([], base)
+    const startAt = dateRange(emptyWeek[0].date)[0]
+    const endAt = dateRange(emptyWeek[6].date)[1]
+    const deviceId = this.data.deviceId
+    const requestId = (this.weekRequestId || 0) + 1
+    this.weekRequestId = requestId
+    let page = 1, reservations = [], hasMore = true
+    while (hasMore) {
+      const result = await call('admin', 'listReservations', { startAt, endAt, deviceId, page, pageSize: 50 })
+      const currentItems = result.items || []
+      reservations = reservations.concat(currentItems)
+      hasMore = Boolean(result.hasMore) && currentItems.length > 0
+      page += 1
     }
-    while (days.length % 7) days.push({ key: `e${days.length}`, empty: true })
-    this.setData({ monthTitle: `${this.year} 年 ${this.month} 月`, calendarDays: days })
+    if (requestId !== this.weekRequestId || deviceId !== this.data.deviceId) return
+    this.setData({ weekDays: this.generateNext7Days(reservations, base) })
   },
   async refresh() {
     this.setData({ loading: true })
     try {
-      const month = `${this.year}-${pad(this.month)}`
-      const calendar = await call('admin', 'reservationCalendar', { month, deviceId: this.data.deviceId })
-      this.setData({ counts: calendar.counts || {} }); this.buildCalendar(calendar.counts || {})
+      await this.loadWeekOverview()
       await this.loadList(true)
     } finally { this.setData({ loading: false }) }
   },
   async loadList(reset) {
-    if (this.listLoading) return
+    if (!reset && this.listLoading) return
+    const selectedDate = this.data.selectedDate, deviceId = this.data.deviceId
+    const requestId = reset ? (this.listRequestId || 0) + 1 : this.listRequestId
+    if (reset) this.listRequestId = requestId
     this.listLoading = true
     try {
-      const page = reset ? 1 : this.data.page + 1, [startAt, endAt] = dateRange(this.data.selectedDate)
-      const result = await call('admin', 'listReservations', { startAt, endAt, deviceId: this.data.deviceId, page, pageSize: 20 })
+      const page = reset ? 1 : this.data.page + 1, [startAt, endAt] = dateRange(selectedDate)
+      const result = await call('admin', 'listReservations', { startAt, endAt, deviceId, page, pageSize: 20 })
+      if (requestId !== this.listRequestId || selectedDate !== this.data.selectedDate || deviceId !== this.data.deviceId) return
       this.setData({ items: reset ? result.items : this.data.items.concat(result.items), total: result.total, page, hasMore: result.hasMore, summary: result.summary || this.data.summary })
-    } finally { this.listLoading = false }
+    } finally { if (requestId === this.listRequestId) this.listLoading = false }
   },
   loadMore() { if (this.data.hasMore) this.loadList(false) },
   openDetail(e) {
