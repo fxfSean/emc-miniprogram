@@ -4,7 +4,7 @@
     <view class="device-copy">
       <text class="eyebrow">设备预约</text>
       <text class="device-name">{{device.name}}</text>
-      <view class="device-meta"><text>编号 {{device.deviceNo}}</text><view wx:if="{{device.location}}" class="device-location"><app-icon name="location" size="21" /><text>{{device.location}}</text></view></view>
+      <view class="device-meta"><text>编号 {{device.deviceNo}}</text><view wx:if="{{device.location || device.checkInPlace.name}}" class="device-location"><app-icon name="location" size="21" /><text>{{device.location || device.checkInPlace.name}}</text></view></view>
     </view>
     <text class="device-status">{{device.statusText}}</text>
   </view>

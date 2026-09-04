@@ -18,6 +18,8 @@ page { background: #f4f6f5; }
 .device-name { font-size: 31rpx; font-weight: 650; }
 .time,.reason { display: block; margin-top: 14rpx; }
 .booking-time { display: flex; align-items: center; gap: 8rpx; color: #44514d; }
+.booking-location { display: flex; align-items: center; gap: 8rpx; margin-top: 12rpx; color: #687078; font-size: 22rpx; }
+.location-changed { margin-left: 4rpx; padding: 3rpx 8rpx; color: #85540d; background: #fff2d5; border-radius: 5rpx; font-size: 18rpx; }
 .tag.status-IN_USE { color: #2563a6; background: #e6f0fa; }
 .tag.status-ENDED { color: #7a8581; background: #eef0ef; }
 .tag.status-CANCELLED { color: #b64a43; background: #f9eaea; }

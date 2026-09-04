@@ -22,6 +22,7 @@
       <text class="section-title">预约信息</text>
       <view class="info-row"><text class="label">预约人</text><text class="value">{{detail.userName}} · {{detail.studentNo || '学号未录入'}}</text></view>
       <view class="info-row"><text class="label">设备</text><text class="value">{{detail.deviceName}} · {{detail.deviceNo || '编号未录入'}}</text></view>
+      <view class="info-row wide"><text class="label">设备位置</text><text class="value multiline">{{detail.deviceLocation || detail.deviceSiteName || '位置未录入'}}<text wx:if="{{detail.locationChanged}}" class="location-updated">位置已更新</text></text></view>
       <view class="info-row wide"><text class="label">预约事由</text><text class="value multiline">{{detail.reason || '未填写'}}</text></view>
       <view class="info-row"><text class="label">提交时间</text><text class="value server-time">{{detail.createdAtText || '暂无记录'}}</text></view>
     </view>
@@ -33,7 +34,7 @@
       <view wx:if="{{detail.checkedOutAtText}}" class="info-row"><text class="label">签退时间</text><text class="value">{{detail.checkedOutAtText}}</text></view>
       <view wx:if="{{detail.actualDurationText}}" class="info-row"><text class="label">实际时长</text><text class="value emphasis">{{detail.actualDurationText}}</text></view>
       <view wx:if="{{detail.checkInSourceText}}" class="info-row"><text class="label">签到方式</text><text class="value">{{detail.checkInSourceText}}</text></view>
-      <view wx:if="{{detail.checkInDistanceMeters !== null}}" class="info-row wide"><text class="label">签到位置</text><text class="value multiline">{{detail.checkInSiteName || '实验室'}} · 距设置点 {{detail.checkInDistanceMeters}} 米</text></view>
+      <view wx:if="{{detail.checkInDistanceMeters !== null}}" class="info-row wide"><text class="label">签到位置</text><text class="value multiline">{{detail.checkInSiteName || '设备位置'}} · 距设置点 {{detail.checkInDistanceMeters}} 米<text wx:if="{{detail.checkInRadiusMeters}}">（范围 {{detail.checkInRadiusMeters}} 米）</text></text></view>
     </view>
 
     <view wx:if="{{detail.cancelReason}}" class="section exception-section">

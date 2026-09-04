@@ -59,6 +59,27 @@ function durationText(seconds) {
   return rest ? `${hours} 小时 ${rest} 分钟` : `${hours} 小时`
 }
 function safeId(value) { return String(value || '').replace(/[^a-zA-Z0-9_-]/g, '_').slice(0, 240) }
+function normalizeDeviceSite(value, location = '') {
+  const source = value || {}
+  const latitude = source.latitude === null || source.latitude === undefined || source.latitude === '' ? null : Number(source.latitude)
+  const longitude = source.longitude === null || source.longitude === undefined || source.longitude === '' ? null : Number(source.longitude)
+  const radiusMeters = source.radiusMeters === null || source.radiusMeters === undefined || source.radiusMeters === '' ? 100 : Number(source.radiusMeters)
+  if (latitude === null && longitude === null) return null
+  return {
+    name: String(source.name || location || '设备位置').trim().slice(0, 60),
+    address: String(source.address || '').trim().slice(0, 120),
+    latitude,
+    longitude,
+    radiusMeters
+  }
+}
+function validDeviceSite(site) {
+  return Boolean(site) && Number.isFinite(site.latitude) && site.latitude >= -90 && site.latitude <= 90 && Number.isFinite(site.longitude) && site.longitude >= -180 && site.longitude <= 180 && Number.isInteger(site.radiusMeters) && site.radiusMeters >= 20 && site.radiusMeters <= 2000
+}
+function deviceSiteSignature(site) {
+  if (!site) return ''
+  return JSON.stringify([site.name, site.address, site.latitude, site.longitude, site.radiusMeters])
+}
 async function putNotification(target, options) {
   await target.collection('notifications').doc(safeId(options.id)).set({ data: {
     recipientUserId: options.userId,
@@ -114,6 +135,10 @@ async function enrichReservations(rows) {
       deviceId: item.deviceId,
       deviceName: device.name || '设备已移除',
       deviceNo: device.deviceNo || '',
+      deviceLocation: String(device.location || ''),
+      deviceSiteName: String((device.checkInSite || {}).name || ''),
+      deviceSiteAddress: String((device.checkInSite || {}).address || ''),
+      locationChanged: Boolean(item.deviceLocationAtBooking && Number(item.deviceLocationAtBooking.locationVersion) !== Number(device.locationVersion || 0)),
       date: item.date || formatDate(item.startAt),
       startAt: item.startAt,
       endAt: item.endAt,
@@ -138,6 +163,8 @@ async function enrichReservations(rows) {
       actualDurationText: item.checkedInAt ? durationText(item.actualDurationSeconds || (item.status === 'IN_USE' ? (Date.now() - Number(item.checkedInAt)) / 1000 : 0)) : '',
       checkInDistanceMeters: item.checkInLocation ? Number(item.checkInLocation.distanceMeters) : null,
       checkInSiteName: item.checkInLocation ? String(item.checkInLocation.siteName || '') : '',
+      checkInSiteAddress: item.checkInLocation ? String(item.checkInLocation.siteAddress || '') : '',
+      checkInRadiusMeters: item.checkInLocation ? Number(item.checkInLocation.radiusMeters) || null : null,
       checkInSourceText: item.checkInSource === 'ADMIN_OVERRIDE' ? '管理员代签到' : (item.checkInSource ? '用户定位签到' : ''),
       checkOutSourceText: item.checkOutSource === 'ADMIN_OVERRIDE' ? '管理员代签退' : (item.checkOutSource === 'ADMIN_CANCEL' ? '管理员取消结束' : (item.checkOutSource ? '用户签退' : '')),
       checkInOverrideReason: String(item.checkInOverrideReason || ''),
@@ -154,7 +181,6 @@ function normalizeRules(value) {
   result.checkInSite = { name: String(site.name || '主实验室').slice(0, 30), latitude: site.latitude === null || site.latitude === undefined || site.latitude === '' ? null : Number(site.latitude), longitude: site.longitude === null || site.longitude === undefined || site.longitude === '' ? null : Number(site.longitude) }
   return result
 }
-function validSite(site) { return Number.isFinite(site.latitude) && site.latitude >= -90 && site.latitude <= 90 && Number.isFinite(site.longitude) && site.longitude >= -180 && site.longitude <= 180 }
 function dateKeys(startAt, endAt) {
   const keys = []
   let cursor = Date.parse(`${formatDate(startAt)}T00:00:00+08:00`)
@@ -318,24 +344,15 @@ exports.main = async event => {
         maxAdvanceDays: Number(event.maxAdvanceDays),
         cancelDeadlineMinutes: Number(event.cancelDeadlineMinutes),
         checkInEarlyMinutes: Number(event.checkInEarlyMinutes),
-        checkInRadiusMeters: Number(event.checkInRadiusMeters),
         maxLocationAccuracyMeters: Number(event.maxLocationAccuracyMeters),
-        checkInMode: 'GEOFENCE',
-        checkInSite: {
-          name: String((event.checkInSite || {}).name || '主实验室').trim().slice(0, 30),
-          latitude: (event.checkInSite || {}).latitude === null || (event.checkInSite || {}).latitude === undefined || (event.checkInSite || {}).latitude === '' ? NaN : Number((event.checkInSite || {}).latitude),
-          longitude: (event.checkInSite || {}).longitude === null || (event.checkInSite || {}).longitude === undefined || (event.checkInSite || {}).longitude === '' ? NaN : Number((event.checkInSite || {}).longitude)
-        }
+        checkInMode: 'GEOFENCE'
       }
       if (!Number.isInteger(values.maxDailyMinutes) || values.maxDailyMinutes < 30 || values.maxDailyMinutes > 1440 || values.maxDailyMinutes % 30) return fail('每日最大预约时长须为 30–1440 分钟且按 30 分钟递增')
       if (!Number.isInteger(values.maxActiveReservations) || values.maxActiveReservations < 1 || values.maxActiveReservations > 20) return fail('最多有效预约数须为 1–20')
       if (!Number.isInteger(values.maxAdvanceDays) || values.maxAdvanceDays < 1 || values.maxAdvanceDays > 90) return fail('提前预约天数须为 1–90')
       if (!Number.isInteger(values.cancelDeadlineMinutes) || values.cancelDeadlineMinutes < 0 || values.cancelDeadlineMinutes > 10080) return fail('取消截止时间须为 0–10080 分钟')
       if (!Number.isInteger(values.checkInEarlyMinutes) || values.checkInEarlyMinutes < 0 || values.checkInEarlyMinutes > 180) return fail('提前签到时间须为 0–180 分钟')
-      if (!Number.isInteger(values.checkInRadiusMeters) || values.checkInRadiusMeters < 20 || values.checkInRadiusMeters > 2000) return fail('签到范围须为 20–2000 米')
       if (!Number.isInteger(values.maxLocationAccuracyMeters) || values.maxLocationAccuracyMeters < 20 || values.maxLocationAccuracyMeters > 2000) return fail('最大定位误差须为 20–2000 米')
-      if (!values.checkInSite.name) return fail('请填写签到位置名称')
-      if (!validSite(values.checkInSite)) return fail('请先使用当前位置设置有效的实验室坐标')
       const existing = (await db.collection('settings').doc('reservation').get().catch(() => ({ data: null }))).data
       const settingsRef = db.collection('settings').doc('reservation')
       const data = { ...values, updatedBy: me._id, updatedAt: db.serverDate() }
@@ -349,15 +366,26 @@ exports.main = async event => {
       if (!allowed.includes(item.status)) return fail('设备状态无效')
       const sameNumber = await db.collection('devices').where({ deviceNo: item.deviceNo.trim() }).limit(10).get()
       if (sameNumber.data.some(x => x._id !== item._id)) return fail('设备编号已存在')
-      const data = { deviceNo: item.deviceNo.trim(), name: item.name.trim(), model: String(item.model || '').trim(), manufacturer: String(item.manufacturer || '').trim(), location: String(item.location || '').trim(), description: String(item.description || '').trim(), status: item.status, updatedAt: db.serverDate() }
+      const location = String(item.location || '').trim().slice(0, 100)
+      const hasSiteInput = Object.prototype.hasOwnProperty.call(item, 'checkInSite')
+      const requestedSite = hasSiteInput ? normalizeDeviceSite(item.checkInSite, location) : null
+      if (hasSiteInput && item.status === 'AVAILABLE' && !validDeviceSite(requestedSite)) return fail('可预约设备必须通过地图设置有效签到位置')
+      if (hasSiteInput && requestedSite && !validDeviceSite(requestedSite)) return fail('设备签到坐标或签到范围无效')
+      const data = { deviceNo: item.deviceNo.trim(), name: item.name.trim(), model: String(item.model || '').trim(), manufacturer: String(item.manufacturer || '').trim(), location, description: String(item.description || '').trim(), status: item.status, updatedAt: db.serverDate() }
       if (item._id) {
         await db.runTransaction(async transaction => {
           const ref = transaction.collection('devices').doc(item._id)
           const current = (await ref.get().catch(() => ({ data: null }))).data
           if (!current) throw new Error('DEVICE_NOT_FOUND')
+          const currentSite = normalizeDeviceSite(current.checkInSite, current.location)
+          const nextSite = hasSiteInput ? requestedSite : currentSite
+          const locationChanged = location !== String(current.location || '') || deviceSiteSignature(nextSite) !== deviceSiteSignature(currentSite)
           const entersMaintenance = current.status !== 'MAINTENANCE' && item.status === 'MAINTENANCE'
           const maintenanceVersion = entersMaintenance ? Math.max(0, Number(current.maintenanceVersion) || 0) + 1 : Math.max(0, Number(current.maintenanceVersion) || 0)
-          await ref.update({ data: { ...data, maintenanceVersion } })
+          const locationVersion = locationChanged ? Math.max(0, Number(current.locationVersion) || 0) + 1 : Math.max(0, Number(current.locationVersion) || 0)
+          const nextData = { ...data, maintenanceVersion, checkInSite: nextSite, locationVersion }
+          if (locationChanged) Object.assign(nextData, { locationUpdatedBy: me._id, locationUpdatedAt: db.serverDate() })
+          await ref.update({ data: nextData })
           if (entersMaintenance) {
             const reservations = await transaction.collection('reservations').where({ deviceId: item._id, status: 'BOOKED', startAt: _.gt(Date.now()) }).limit(100).get()
             const userIds = [...new Set(reservations.data.map(row => row.userId).filter(Boolean))]
@@ -371,7 +399,10 @@ exports.main = async event => {
             }
           }
         })
-      } else await db.collection('devices').add({ data: { ...data, maintenanceVersion: item.status === 'MAINTENANCE' ? 1 : 0, createdAt: db.serverDate() } })
+      } else {
+        if (item.status === 'AVAILABLE' && !validDeviceSite(requestedSite)) return fail('可预约设备必须通过地图设置有效签到位置')
+        await db.collection('devices').add({ data: { ...data, checkInSite: requestedSite, locationVersion: requestedSite ? 1 : 0, locationUpdatedBy: requestedSite ? me._id : '', locationUpdatedAt: requestedSite ? db.serverDate() : null, maintenanceVersion: item.status === 'MAINTENANCE' ? 1 : 0, createdAt: db.serverDate() } })
+      }
       return ok(true)
     }
     if (event.action === 'deleteDevice') {

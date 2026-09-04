@@ -6,6 +6,31 @@
 .sheet-title { font-size: 34rpx; font-weight: 700; }
 .close { color: #687078; }
 .sheet .input,.sheet .picker { margin-top: 20rpx; }
+.location-section { margin-top: 24rpx; padding: 24rpx; background: #f4f7f6; border: 1rpx solid #dfe6e3; border-radius: 11rpx; }
+.location-heading { display: flex; align-items: flex-start; justify-content: space-between; gap: 20rpx; }
+.location-kicker,.location-title,.location-copy,.selected-name,.selected-address,.radius-title,.radius-copy { display: block; }
+.location-kicker { color: #6fae9c; font: 700 17rpx/1 Georgia, serif; letter-spacing: 2rpx; }
+.location-title { margin-top: 7rpx; color: #1d2925; font-size: 29rpx; font-weight: 700; }
+.location-status { flex: none; padding: 6rpx 12rpx; color: #687078; background: #e5e9e7; border-radius: 6rpx; font-size: 19rpx; }
+.location-status.ready { color: #176b5b; background: #dceee9; }
+.location-copy { margin-top: 12rpx; color: #77817d; font-size: 21rpx; line-height: 1.55; }
+.map-shell { position: relative; overflow: hidden; height: 260rpx; margin-top: 20rpx; border: 1rpx solid #d7dfdc; border-radius: 9rpx; }
+.map-preview { width: 100%; height: 100%; }
+.map-edit-tip { position: absolute; right: 12rpx; bottom: 12rpx; display: flex; align-items: center; gap: 6rpx; padding: 8rpx 12rpx; color: #176b5b; background: rgba(255,255,255,.92); border-radius: 6rpx; font-size: 19rpx; }
+.selected-location { display: flex; align-items: center; margin-top: 16rpx; padding: 15rpx; background: #fff; border: 1rpx solid #e1e6e4; border-radius: 8rpx; }
+.selected-icon { display: flex; align-items: center; justify-content: center; flex: none; width: 54rpx; height: 54rpx; margin-right: 14rpx; color: #176b5b; background: #e8f2ef; border-radius: 7rpx; }
+.selected-copy { min-width: 0; }
+.selected-name { overflow: hidden; color: #1d2925; font-size: 24rpx; font-weight: 700; text-overflow: ellipsis; white-space: nowrap; }
+.selected-address { overflow: hidden; margin-top: 5rpx; color: #77817d; font-size: 19rpx; text-overflow: ellipsis; white-space: nowrap; }
+.migration-note { margin-top: 14rpx; padding: 12rpx 14rpx; color: #85540d; background: #fff2d5; border-left: 4rpx solid #c48a2a; border-radius: 6rpx; font-size: 20rpx; line-height: 1.5; }
+.choose-location { display: flex; align-items: center; justify-content: center; gap: 8rpx; width: 100%; height: 74rpx; margin: 18rpx 0 0; color: #176b5b; background: #e2f0ec; border-radius: 8rpx; font-size: 24rpx; font-weight: 700; line-height: 1; }
+.choose-location::after { border: 0; }
+.radius-row { display: flex; align-items: center; justify-content: space-between; gap: 20rpx; margin-top: 20rpx; padding-top: 18rpx; border-top: 1rpx solid #dde4e1; }
+.radius-title { color: #44514d; font-size: 24rpx; font-weight: 700; }
+.radius-copy { margin-top: 5rpx; color: #89918e; font-size: 18rpx; }
+.radius-input { display: flex; align-items: center; flex: none; width: 154rpx; height: 64rpx; padding: 0 14rpx; box-sizing: border-box; background: #fff; border: 1rpx solid #d7dfdc; border-radius: 8rpx; }
+.radius-input input { min-width: 0; flex: 1; font: 700 24rpx/1 Georgia, serif; text-align: right; }
+.radius-input text { margin-left: 8rpx; color: #77817d; font-size: 20rpx; }
 .form-actions { margin-top: 30rpx; }
 .sheet .save-button { display: flex; align-items: center; justify-content: center; width: 100%; height: 84rpx; margin: 0; padding: 0; border-radius: 10rpx; line-height: 1; font-weight: 700; }
 .delete-action-row { display: flex; justify-content: flex-end; margin-top: 20rpx; padding-top: 16rpx; border-top: 1rpx solid #e3e7e5; }

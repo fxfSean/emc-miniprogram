@@ -5,15 +5,8 @@
   <view class="rule"><view class="rule-number">04</view><view class="rule-main"><text class="label">预约取消截止时间</text><text class="desc">设为 0 表示开始前均可取消</text></view><view class="value"><input type="number" value="{{form.cancelDeadlineMinutes}}" data-key="cancelDeadlineMinutes" bindinput="input"/><text>分钟</text></view></view>
   <view class="section-heading"><text>签到规则</text><text>CHECK-IN POLICY</text></view>
   <view class="rule"><view class="rule-number">05</view><view class="rule-main"><text class="label">可提前签到时间</text><text class="desc">预约开始前 0–180 分钟</text></view><view class="value"><input type="number" value="{{form.checkInEarlyMinutes}}" data-key="checkInEarlyMinutes" bindinput="input"/><text>分钟</text></view></view>
-  <view class="rule"><view class="rule-number">06</view><view class="rule-main"><text class="label">签到位置范围</text><text class="desc">距离实验室 20–2000 米</text></view><view class="value"><input type="number" value="{{form.checkInRadiusMeters}}" data-key="checkInRadiusMeters" bindinput="input"/><text>米</text></view></view>
-  <view class="rule"><view class="rule-number">07</view><view class="rule-main"><text class="label">最大定位误差</text><text class="desc">误差过大时要求重新定位</text></view><view class="value"><input type="number" value="{{form.maxLocationAccuracyMeters}}" data-key="maxLocationAccuracyMeters" bindinput="input"/><text>米</text></view></view>
-  <view class="location-panel">
-    <view class="location-head"><view><text class="location-kicker">GEOFENCE</text><text class="location-title">实验室签到位置</text></view><text class="location-status {{siteConfigured ? 'ready' : ''}}">{{siteConfigured ? '已设置' : '未设置'}}</text></view>
-    <text class="location-copy">请在实验室现场使用管理员手机设置。普通用户只能在设定范围内签到。</text>
-    <input class="site-name" value="{{form.checkInSite.name}}" data-key="checkInSite.name" maxlength="30" bindinput="input" placeholder="位置名称，例如：主实验室"/>
-    <view class="coordinate"><text>坐标状态</text><text>{{siteConfigured ? '已采集 GCJ-02 坐标' : '等待采集当前位置'}}</text></view>
-    <button class="locate" loading="{{locating}}" disabled="{{locating}}" bindtap="locate">使用当前位置设置实验室</button>
-  </view>
+  <view class="rule"><view class="rule-number">06</view><view class="rule-main"><text class="label">最大定位误差</text><text class="desc">误差过大时要求重新定位</text></view><view class="value"><input type="number" value="{{form.maxLocationAccuracyMeters}}" data-key="maxLocationAccuracyMeters" bindinput="input"/><text>米</text></view></view>
+  <view class="notice location-notice">设备签到位置和签到范围已移至“设备管理”，可在新增或编辑设备时通过地图配置。</view>
   <view class="notice">管理员因设备故障等情况取消预约，不受普通用户取消截止时间限制。</view>
   <button class="button save" loading="{{saving}}" disabled="{{saving}}" bindtap="save">保存并应用规则</button>
 </view>

@@ -1,5 +1,7 @@
 # 预约签到与签退技术设计
 
+> 设备独立签到位置的最新设计见 `specs/device-checkin-location/design.md`；本文件中的 `settings/reservation.checkInSite` 仅作为旧数据兼容回退。
+
 ## 1. 设计目标
 
 在不新增业务集合的前提下扩展现有 `reservations` 和 `settings/reservation`，将预约计划状态与实际使用状态统一在现有预约云函数中处理。所有状态变更、时间计算、身份校验和地理围栏判断均在云函数执行。

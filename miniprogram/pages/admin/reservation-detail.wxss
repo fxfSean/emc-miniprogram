@@ -18,6 +18,7 @@
 .label { padding-top: 3rpx; color: #89918e; font-size: 22rpx; line-height: 1.45; }
 .value { min-width: 0; font-size: 27rpx; line-height: 1.45; text-align: left; word-break: break-all; }
 .server-time { color: #44514d; font-family: Georgia, serif; font-size: 25rpx; }
+.location-updated { display: inline-block; margin-left: 12rpx; padding: 3rpx 8rpx; color: #85540d; background: #fff2d5; border-radius: 5rpx; font-size: 18rpx; vertical-align: middle; }
 .emphasis { color: #176b5b; font-family: Georgia, serif; font-weight: 700; }
 .usage-section { border-left-color: #6fae9c; }
 .exception-section { border-left-color: #b64a43; }

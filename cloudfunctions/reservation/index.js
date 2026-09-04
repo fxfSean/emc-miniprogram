@@ -46,6 +46,31 @@ function category(row, now) {
 }
 function durationText(minutes) { return minutes % 60 === 0 ? `${minutes / 60} 小时` : `${minutes} 分钟` }
 function validSite(site) { return Number.isFinite(site.latitude) && site.latitude >= -90 && site.latitude <= 90 && Number.isFinite(site.longitude) && site.longitude >= -180 && site.longitude <= 180 }
+function resolveDeviceSite(device, rules) {
+  const configured = (device || {}).checkInSite || {}
+  const deviceSite = {
+    name: String(configured.name || (device || {}).location || '设备位置').slice(0, 60),
+    address: String(configured.address || '').slice(0, 120),
+    latitude: configured.latitude === null || configured.latitude === undefined || configured.latitude === '' ? null : Number(configured.latitude),
+    longitude: configured.longitude === null || configured.longitude === undefined || configured.longitude === '' ? null : Number(configured.longitude),
+    radiusMeters: Number(configured.radiusMeters)
+  }
+  if (validSite(deviceSite) && Number.isInteger(deviceSite.radiusMeters) && deviceSite.radiusMeters >= 20 && deviceSite.radiusMeters <= 2000) {
+    return { ...deviceSite, deviceLocation: String((device || {}).location || ''), locationVersion: Math.max(0, Number((device || {}).locationVersion) || 0), configSource: 'DEVICE' }
+  }
+  const fallbackRadius = Number(rules.checkInRadiusMeters)
+  if (validSite(rules.checkInSite) && Number.isInteger(fallbackRadius) && fallbackRadius >= 20 && fallbackRadius <= 2000) {
+    return {
+      name: String(rules.checkInSite.name || '主实验室').slice(0, 60), address: '', latitude: Number(rules.checkInSite.latitude), longitude: Number(rules.checkInSite.longitude), radiusMeters: fallbackRadius,
+      deviceLocation: String((device || {}).location || ''), locationVersion: 0, configSource: 'GLOBAL_FALLBACK'
+    }
+  }
+  return null
+}
+function deviceSiteToken(site) {
+  if (!site) return ''
+  return [site.configSource, site.latitude, site.longitude, site.radiusMeters, site.locationVersion].join('|')
+}
 function validLocation(location) {
   const value = location || {}, latitude = Number(value.latitude), longitude = Number(value.longitude), accuracy = Number(value.accuracy)
   return Number.isFinite(latitude) && latitude >= -90 && latitude <= 90 && Number.isFinite(longitude) && longitude >= -180 && longitude <= 180 && Number.isFinite(accuracy) && accuracy >= 0
@@ -112,7 +137,11 @@ async function createBooking(actor, target, event, source) {
     if (conflict.data.length) throw new Error('TIME_CONFLICT')
     const blocked = await transaction.collection('device_blocks').where({ deviceId: event.deviceId, startAt: _.lt(endAt), endAt: _.gt(startAt) }).limit(1).get()
     if (blocked.data.length) throw new Error('BLOCK_CONFLICT')
-    const data = { deviceId: event.deviceId, userId: target._id, date: event.date, startAt, endAt, startTime: event.startTime, endTime: event.endTime, reason: reason.slice(0, 200), status: 'BOOKED', bookingSource: source, createdAt: db.serverDate(), updatedAt: db.serverDate() }
+    const data = {
+      deviceId: event.deviceId, userId: target._id, date: event.date, startAt, endAt, startTime: event.startTime, endTime: event.endTime, reason: reason.slice(0, 200), status: 'BOOKED', bookingSource: source,
+      deviceLocationAtBooking: { location: String(device.location || ''), siteName: String((device.checkInSite || {}).name || ''), siteAddress: String((device.checkInSite || {}).address || ''), locationVersion: Math.max(0, Number(device.locationVersion) || 0) },
+      createdAt: db.serverDate(), updatedAt: db.serverDate()
+    }
     if (source === 'ADMIN') data.bookedByAdminId = actor._id
     const created = await transaction.collection('reservations').add({ data })
     const reservationId = created._id
@@ -172,7 +201,7 @@ async function mine(event, me) {
   }
   const ids = [...new Set(rows.map(item => item.deviceId))]
   const devices = ids.length ? (await db.collection('devices').where({ _id: _.in(ids) }).get()).data : []
-  const names = Object.fromEntries(devices.map(item => [item._id, item.name]))
+  const deviceMap = Object.fromEntries(devices.map(item => [item._id, item]))
   const rules = await getRules()
   return ok(rows.map(item => {
     const state = category(item, now), missed = state === 'ENDED' && item.status === 'BOOKED'
@@ -187,7 +216,10 @@ async function mine(event, me) {
       reason: String(item.reason || ''),
       status: item.status,
       cancelReason: String(item.cancelReason || ''),
-      deviceName: names[item.deviceId] || '设备已移除',
+      deviceName: deviceMap[item.deviceId] ? deviceMap[item.deviceId].name : '设备已移除',
+      deviceLocation: deviceMap[item.deviceId] ? String(deviceMap[item.deviceId].location || '') : '',
+      deviceSiteName: deviceMap[item.deviceId] ? String((deviceMap[item.deviceId].checkInSite || {}).name || '') : '',
+      locationChanged: Boolean(item.deviceLocationAtBooking && deviceMap[item.deviceId] && Number(item.deviceLocationAtBooking.locationVersion) !== Number(deviceMap[item.deviceId].locationVersion || 0)),
       category: state,
       statusText: missed ? '已结束 · 未签到' : statusText[state],
       canCancel: state === 'WAITING',
@@ -205,16 +237,25 @@ async function mine(event, me) {
 async function checkInBooking(event, actor, adminOverride) {
   const rules = await getRules(), now = Date.now(), reason = String(event.reason || '').trim()
   let locationAudit = null
+  let expectedSiteToken = ''
   if (adminOverride) {
     if (!reason) return fail('请填写代签到原因')
   } else {
-    if (!validSite(rules.checkInSite)) return fail('管理员尚未配置实验室签到位置')
+    const preview = (await db.collection('reservations').doc(String(event.id || '')).get().catch(() => ({ data: null }))).data
+    if (!preview || preview.userId !== actor._id) return fail('预约不存在')
+    const device = (await db.collection('devices').doc(String(preview.deviceId || '')).get().catch(() => ({ data: null }))).data
+    const targetSite = resolveDeviceSite(device, rules)
+    if (!targetSite) return fail('管理员尚未配置该设备的签到位置')
     if (!validLocation(event.location)) return fail('无法获取有效定位，请重新定位')
     const location = { latitude: Number(event.location.latitude), longitude: Number(event.location.longitude), accuracy: Number(event.location.accuracy) }
     if (location.accuracy > rules.maxLocationAccuracyMeters) return fail(`定位误差过大，请移动到开阔位置后重试（需小于 ${rules.maxLocationAccuracyMeters} 米）`)
-    const distance = distanceMeters(location, rules.checkInSite)
-    if (distance > rules.checkInRadiusMeters) return fail(`当前位置不在实验室签到范围内（允许 ${rules.checkInRadiusMeters} 米）`)
-    locationAudit = { ...location, distanceMeters: Math.round(distance), siteName: rules.checkInSite.name }
+    const distance = distanceMeters(location, targetSite)
+    if (distance > targetSite.radiusMeters) return fail(`当前位置不在该设备签到范围内（允许 ${targetSite.radiusMeters} 米）`)
+    expectedSiteToken = deviceSiteToken(targetSite)
+    locationAudit = {
+      ...location, distanceMeters: Math.round(distance), siteName: targetSite.name, siteAddress: targetSite.address, deviceLocation: targetSite.deviceLocation,
+      targetLatitude: targetSite.latitude, targetLongitude: targetSite.longitude, radiusMeters: targetSite.radiusMeters, locationVersion: targetSite.locationVersion, configSource: targetSite.configSource
+    }
   }
   await db.runTransaction(async transaction => {
     const ref = transaction.collection('reservations').doc(String(event.id || ''))
@@ -225,6 +266,10 @@ async function checkInBooking(event, actor, adminOverride) {
     if (now >= row.endAt) throw new Error('CHECK_IN_EXPIRED')
     const usageLockId = `usage_${row.deviceId}`.replace(/[^a-zA-Z0-9_-]/g, '_')
     await transaction.collection('reservation_locks').doc(usageLockId).set({ data: { deviceId: row.deviceId, touchedAt: db.serverDate() } })
+    if (!adminOverride) {
+      const currentDevice = (await transaction.collection('devices').doc(row.deviceId).get().catch(() => ({ data: null }))).data
+      if (deviceSiteToken(resolveDeviceSite(currentDevice, rules)) !== expectedSiteToken) throw new Error('DEVICE_LOCATION_CHANGED')
+    }
     const occupied = await transaction.collection('reservations').where({ deviceId: row.deviceId, status: 'IN_USE' }).limit(1).get()
     if (occupied.data.length) throw new Error('DEVICE_IN_USE')
     const data = { status: 'IN_USE', checkedInAt: now, checkInSource: adminOverride ? 'ADMIN_OVERRIDE' : 'USER_GEOFENCE', updatedAt: db.serverDate() }
@@ -326,6 +371,7 @@ exports.main = async event => {
     if (error.message === 'CHECK_IN_TOO_EARLY') return fail('尚未到签到时间')
     if (error.message === 'CHECK_IN_EXPIRED') return fail('预约时段已结束，无法签到')
     if (error.message === 'DEVICE_IN_USE') return fail('该设备当前已有用户签到使用，请联系管理员')
+    if (error.message === 'DEVICE_LOCATION_CHANGED') return fail('设备签到位置刚刚发生变化，请重新定位后签到')
     if (error.message === 'CHECK_OUT_NOT_ALLOWED') return fail('该预约当前不可签退')
     return fail('预约服务异常')
   }

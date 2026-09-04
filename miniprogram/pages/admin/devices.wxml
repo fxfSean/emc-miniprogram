@@ -11,7 +11,28 @@
       <input class="input" data-key="name" value="{{form.name}}" bindinput="input" placeholder="设备名称 *"/>
       <input class="input" data-key="model" value="{{form.model}}" bindinput="input" placeholder="型号"/>
       <input class="input" data-key="manufacturer" value="{{form.manufacturer}}" bindinput="input" placeholder="厂家"/>
-      <input class="input" data-key="location" value="{{form.location}}" bindinput="input" placeholder="位置"/>
+      <input class="input" data-key="location" value="{{form.location}}" bindinput="input" placeholder="具体位置，例如：机械楼 302 室东侧"/>
+      <view class="location-section">
+        <view class="location-heading">
+          <view><text class="location-kicker">CHECK-IN GEOFENCE</text><text class="location-title">设备签到位置</text></view>
+          <text class="location-status {{siteConfigured ? 'ready' : ''}}">{{siteConfigured ? '已设置' : '未设置'}}</text>
+        </view>
+        <text class="location-copy">通过地图搜索或选择设备所在建筑，无需在设备现场采集定位。</text>
+        <view wx:if="{{siteConfigured}}" class="map-shell" bindtap="chooseLocation">
+          <map class="map-preview" latitude="{{mapLatitude}}" longitude="{{mapLongitude}}" scale="17" markers="{{mapMarkers}}" circles="{{mapCircles}}" enable-scroll="{{false}}" enable-zoom="{{false}}" show-location="{{false}}"></map>
+          <cover-view class="map-edit-tip" bindtap="chooseLocation">点击地图重新选择</cover-view>
+        </view>
+        <view wx:if="{{siteConfigured}}" class="selected-location">
+          <view class="selected-icon"><app-icon name="location" size="30" label="地图位置" /></view>
+          <view class="selected-copy"><text class="selected-name">{{form.checkInSite.name}}</text><text class="selected-address">{{form.checkInSite.address || '地图未返回详细地址'}}</text></view>
+        </view>
+        <view wx:if="{{inheritedSite}}" class="migration-note">当前显示的是旧版全局签到位置，保存设备后将转为该设备的独立位置。</view>
+        <button class="choose-location" loading="{{choosingLocation}}" disabled="{{choosingLocation}}" bindtap="chooseLocation"><app-icon name="location" size="27" /><text>{{siteConfigured ? '重新选择地图位置' : '在地图中选择位置'}}</text></button>
+        <view class="radius-row">
+          <view><text class="radius-title">签到范围</text><text class="radius-copy">建议室外建筑设置 100–200 米</text></view>
+          <view class="radius-input"><input type="number" value="{{form.checkInSite.radiusMeters}}" bindinput="radiusInput"/><text>米</text></view>
+        </view>
+      </view>
       <picker range="{{statusNames}}" value="{{statusIndex}}" bindchange="status"><view class="picker">状态：{{statusNames[statusIndex]}}</view></picker>
       <view class="form-actions">
         <button class="button save-button" loading="{{processing === 'SAVE'}}" disabled="{{processing !== ''}}" bindtap="save">保存设备</button>

@@ -18,6 +18,7 @@
   <view class="card booking" wx:for="{{reservations}}" wx:key="_id">
     <view class="row between"><text class="device-name">{{item.deviceName}}</text><text class="tag status-{{item.category}}">{{item.statusText}}</text></view>
     <view class="time booking-time"><app-icon name="calendar" size="24" /><text>{{item.date}}　{{item.startTime}}–{{item.endTime}}</text></view>
+    <view wx:if="{{item.deviceLocation || item.deviceSiteName}}" class="booking-location"><app-icon name="location" size="23" /><text>{{item.deviceLocation || item.deviceSiteName}}</text><text wx:if="{{item.locationChanged}}" class="location-changed">位置已更新</text></view>
     <text class="muted reason">{{item.reason}}</text>
     <view wx:if="{{item.checkedInAtText}}" class="usage"><view><text>签到时间</text><text>{{item.checkedInAtText}}</text></view><view wx:if="{{item.checkedOutAtText}}"><text>签退时间</text><text>{{item.checkedOutAtText}}</text></view><view wx:if="{{item.actualDurationText}}"><text>实际使用</text><text class="duration">{{item.actualDurationText}}</text></view></view>
     <text wx:if="{{item.checkInHint}}" class="check-hint">{{item.checkInHint}}</text>

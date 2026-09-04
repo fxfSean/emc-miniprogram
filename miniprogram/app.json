@@ -18,10 +18,10 @@
   },
   "permission": {
     "scope.userLocation": {
-      "desc": "用于确认用户到达实验室后完成设备预约签到"
+      "desc": "用于选择设备签到位置及确认用户到场签到"
     }
   },
-  "requiredPrivateInfos": ["getLocation"],
+  "requiredPrivateInfos": ["getLocation", "chooseLocation"],
   "tabBar": {
     "color": "#687078", "selectedColor": "#176b5b", "backgroundColor": "#ffffff",
     "list": [

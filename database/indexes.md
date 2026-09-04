@@ -25,3 +25,5 @@ Create these indexes in CloudBase console before integration testing.
 | `notification_deliveries` | `status` ascending, `createdAt` ascending |
 
 All business collections should use the CloudBase permission preset "admin only". The mini program accesses them through cloud functions.
+
+Device-specific check-in locations are stored in the existing `devices.checkInSite` object with `locationVersion` and audit fields. No new collection or index is required. During migration, devices without this object continue to use the legacy `settings/reservation.checkInSite` and `checkInRadiusMeters` values as a read-only fallback.
